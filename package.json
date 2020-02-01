@@ -1,0 +1,13 @@
+{
+  "name": "yankee-doodle",
+  "version": "1.0.0",
+  "scripts": {},
+  "description": "Yank values a from given object via a specified schema",
+  "author": "Hayden Perry haydencwperry@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bakewellcake/yankee-doodle"
+  },
+  "main": "index.js",
+  "keywords": ["yank", "yanked", "pick", "picked", "pluck", "plucked", "schema"]
+}
