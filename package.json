@@ -6,8 +6,21 @@
   "author": "Hayden Perry haydencwperry@gmail.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bakewellcake/yankee-doodle"
+    "url": "git+https://github.com/bakewellcake/yankee-doodle.git"
   },
   "main": "index.js",
-  "keywords": ["yank", "yanked", "pick", "picked", "pluck", "plucked", "schema"]
+  "keywords": [
+    "yank",
+    "yanked",
+    "pick",
+    "picked",
+    "pluck",
+    "plucked",
+    "schema"
+  ],
+  "bugs": {
+    "url": "https://github.com/bakewellcake/yankee-doodle/issues"
+  },
+  "homepage": "https://github.com/bakewellcake/yankee-doodle#readme",
+  "license": "MIT"
 }
