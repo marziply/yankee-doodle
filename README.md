@@ -152,7 +152,7 @@ yank.nullify(data, 'emailAddress')
 
 ## Tests
 
-**Soon to be added**
+`npm run test`
 
 ## Authors
 
