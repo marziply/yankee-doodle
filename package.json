@@ -1,6 +1,6 @@
 {
   "name": "yankee-doodle",
-  "version": "1.2.2",
+  "version": "1.3.2",
   "scripts": {},
   "description": "Yank values from a given object via a specified schema",
   "author": "Hayden Perry haydencwperry@gmail.com",
