@@ -5,3 +5,4 @@ node_modules/
 .vscode/
 .DS_STORE
 .DS_STORE?
+package-lock.json
