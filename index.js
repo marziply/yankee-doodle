@@ -1,4 +1,4 @@
-const yank = require('./lib/yank')
+const yank = require('./src/yank')
 
 yank.nullify = (...args) => yank.call({ nullify: true }, ...args)
 
