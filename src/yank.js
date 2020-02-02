@@ -28,6 +28,4 @@ function yank (object, ...args) {
   return yanked
 }
 
-yank.nullify = (...args) => yank.call({ nullify: true }, ...args)
-
 module.exports = yank
