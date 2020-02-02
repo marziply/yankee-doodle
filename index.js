@@ -51,17 +51,4 @@ function prune (yanked) {
   }
 }
 
-const data = {
-  test1: 'test',
-  test2: 'test',
-  test3: {
-    test4: 'test',
-    test5: 'test'
-  }
-}
-
-const picked = yank(data, ` test1, test3: { test4, test5 } `)
-
-console.log(picked)
-
 module.exports = yank
