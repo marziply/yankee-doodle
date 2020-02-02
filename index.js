@@ -26,7 +26,7 @@ function walk (object, yanked, schema) {
     const [originalKey, renamedKey] = key.split('->')
     const newKey = renamedKey || originalKey
 
-    if (object.hasOwnProperty(originalKey)) {
+    if (!!object && object.hasOwnProperty(originalKey)) {
       const { length } = values(value || {})
 
       if (length) walk(object[originalKey], yanked[newKey] = {}, schema[key])
