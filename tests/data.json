@@ -1,0 +1,21 @@
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "dateOfBirth": "1985-01-01",
+  "addressDetails": {
+    "address1": "10 Downing Street",
+    "address2": null,
+    "address3": null,
+    "city": "London",
+    "postcode": "SW1A 2AB"
+  },
+  "nested": {
+    "data": {
+      "items": {
+        "one": "one",
+        "two": "two",
+        "three": "three"
+      }
+    }
+  }
+}
