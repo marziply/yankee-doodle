@@ -138,6 +138,17 @@ yank(data, 'addressDetails: { county }', 'addressDetails: { city }', 'dateOfBirt
 // }
 ```
 
+Don't want an empty object when there are no values associated with what you're picking from? Use `yank.nullify` to return a null value instead.
+
+``` javascript
+{
+  emailAddress: yank.nullify(data, 'emailAddress')
+}
+// {
+//   "emailAddress": null
+// }
+```
+
 ## Todo
 
 - Add Lodash style path keys for selecting deeply nested properties

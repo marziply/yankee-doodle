@@ -18,6 +18,12 @@ function yank (object, ...args) {
     walk(object, yanked, parsedSchema)
   }
 
+  if (this && this.nullify && isObject(yanked)) {
+    const { length } = values(yanked)
+
+    if (!length) return null
+  }
+
   return yanked
 }
 
@@ -41,14 +47,18 @@ function prune (yanked) {
   for (const [key, value] of entries(yanked)) {
     const { length } = values(value)
 
-    if (!length) {
-      let proto = value
-
-      while ((proto = getPrototypeOf(proto)) !== null)
-
-      if (getPrototypeOf(value) === proto) delete yanked[key]
-    }
+    if (!length && isObject(value)) delete yanked[key]
   }
 }
+
+function isObject (object) {
+  let proto = object
+
+  while ((proto = getPrototypeOf(proto)) !== null)
+
+  if (getPrototypeOf(object) === proto) return true
+}
+
+yank.nullify = (...args) => yank.call({ nullify: true }, ...args)
 
 module.exports = yank
