@@ -28,11 +28,4 @@ function yank (object, ...args) {
   return yanked
 }
 
-const data = {
-  test1: 'test',
-  test2: 'test'
-}
-
-console.log(yank(data, ['test1', 'test2']))
-
 module.exports = yank
