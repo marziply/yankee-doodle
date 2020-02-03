@@ -4,7 +4,8 @@
   "scripts": {
     "test": "jest ./tests",
     "build": "NODE_ENV=production webpack",
-    "build:commit": "npm run build && git commit --amend --no-edit --no-verify"
+    "build:commit": "npm run build && npm run commit",
+    "commit": "git add ./dist/yankee-doodle.min.js && git commit --amend --no-edit --no-verify"
   },
   "description": "Yank values from a given object via a specified schema",
   "author": "Hayden Perry haydencwperry@gmail.com",
@@ -28,10 +29,14 @@
   "homepage": "https://github.com/bakewellcake/yankee-doodle#readme",
   "license": "MIT",
   "devDependencies": {
+    "husky": "^4.2.1",
     "jest": "^25.1.0",
-    "pre-commit": "^1.2.2",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
   },
-  "pre-commit": ["test", "build:commit"]
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run test && npm run build:commit"
+    }
+  }
 }
