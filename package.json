@@ -1,6 +1,6 @@
 {
   "name": "yankee-doodle",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "scripts": {
     "test": "jest ./tests",
     "build": "NODE_ENV=production webpack",
@@ -36,7 +36,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run test && npm run build:commit"
+      "pre-commit": "npm run test"
     }
   }
 }
