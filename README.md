@@ -81,7 +81,7 @@ yank(data, 'nested: { data: { items: { one, two } } }')
 // }
 ```
 
-You can even provide your schema with whitespace if you felt so inclined to format at this way.
+You can even provide your schema with whitespace if you felt so inclined to format it this way.
 
 ``` javascript
 yank(data, `
