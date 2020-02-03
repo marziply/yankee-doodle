@@ -2,7 +2,7 @@ const walk = require('./walk')
 const isObject = require('./isObject')
 
 function yank (object, ...args) {
-  if (args.length === 0) return object
+  if (!args.length) return object
 
   const schemaList = args.flat()
   const yanked = {}
