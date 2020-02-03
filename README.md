@@ -148,7 +148,6 @@ yank.nullify(data, 'emailAddress')
 ## Todo
 
 - Add Lodash style path keys for selecting deeply nested properties
-- Add tests
 
 ## Tests
 
