@@ -1,9 +1,10 @@
 {
   "name": "yankee-doodle",
-  "version": "1.4.4",
+  "version": "1.5.0",
   "scripts": {
     "test": "jest ./tests",
-    "build": "NODE_ENV=production webpack"
+    "build": "NODE_ENV=production webpack",
+    "build:commit": "npm run build && git commit --amend --no-edit --no-verify"
   },
   "description": "Yank values from a given object via a specified schema",
   "author": "Hayden Perry haydencwperry@gmail.com",
@@ -28,7 +29,9 @@
   "license": "MIT",
   "devDependencies": {
     "jest": "^25.1.0",
+    "pre-commit": "^1.2.2",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
-  }
+  },
+  "pre-commit": ["test", "build:commit"]
 }
