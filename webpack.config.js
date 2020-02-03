@@ -1,12 +1,12 @@
 const webpack = require('webpack')
 
-const env = process.NODE_ENV === 'production' ? 'production' : 'development'
+const env = process.env.NODE_ENV === 'production' ? 'production' : 'development'
 
 module.exports = {
   mode: env,
-  entry: __dirname + '/index.js',
+  entry: './index.js',
   output: {
-    path: __dirname + '/dist',
+    path: `${__dirname}/dist`,
     filename: 'yankee-doodle.min.js'
   }
 }
