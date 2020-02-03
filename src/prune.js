@@ -4,9 +4,9 @@ const { entries, values } = Object
 
 function prune (yanked) {
   for (const [key, value] of entries(yanked)) {
-    const { length } = values(value)
+    const { length } = values(value || {})
 
-    if (!length && isObject(value)) delete yanked[key]
+    if (isObject(value) && !length) delete yanked[key]
   }
 }
 
