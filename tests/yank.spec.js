@@ -88,7 +88,33 @@ describe('src/yank', () => {
     done()
   })
   
-  it('should return undefined properties when using nullify within renamed properties', done => {
+  it('recreate a full nested schema if the whole object is undefined', () => {
+    const data = {
+      yank: 'one'
+    }
+
+    const schema = [
+      'yank',
+      `notexists: {
+        one,
+        two
+      }`
+    ]
+
+    const nullify = (...args) => yank.call({ nullify: true }, ...args)
+
+    const yanked = nullify(data, schema)
+
+    expect(yanked).toEqual({
+      yank: 'one',
+      notexists: {
+        one: null,
+        two: null,
+      }
+    })  
+  })
+
+  it('should return undefined properties when using nullify within renamed properties', () => {
     const data = {
       yank: 'one',
       nested: {
@@ -111,6 +137,7 @@ describe('src/yank', () => {
     const nullYanked2 = yank(data2, schema)
     const yanked = yank(data, schema)
     
+    // It has renamed the property but with null
     expect(nullYanked).toEqual({
       nested: {
         forced: null,
@@ -118,6 +145,7 @@ describe('src/yank', () => {
       }
     })
     
+    // It does not have the original named property
     expect(nullYanked).not.toEqual({
       nested: {
         notexists: null,
@@ -125,19 +153,26 @@ describe('src/yank', () => {
       }
     })
     
+    // It has left the prop not defined in schema
+    expect(nullYanked).not.toEqual(
+      expect.objectContaining({
+        yank: 'one',
+      })
+      )
+      
+    // The non null version did omit the missing prop
     expect(yanked).toEqual({
       nested: {
         exists: 'two'
       }
     })
     
+    // It is still renaming accordingly if the data was there.
     expect(nullYanked2).toEqual({
       nested: {
         forced: 'three',
         exists: 'two',
       }
     })
-
-    done()
   })
 })
