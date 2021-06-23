@@ -15,8 +15,7 @@ function yank (object, ...args) {
       .replace(/([\w->]+)/g, '"$1"')
       .replace(/((?<!}),|(?<=")\s?}|(?<!})$)/g, ':0$1')
     const parsedSchema = JSON.parse(`{${parsedArgs}}`)
-
-    walk(object, yanked, parsedSchema)
+    walk(object, yanked, parsedSchema, this.nullify)
   }
 
   if (this && this.nullify && isObject(yanked)) {

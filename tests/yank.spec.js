@@ -48,4 +48,96 @@ describe('src/yank', () => {
       done()
     }
   })
+
+  it('should return undefined properties when using nullify', done => {
+    const data = { exists: 'one', yank: 'two' }
+    const nullify = (...args) => yank.call({ nullify: true }, ...args)
+    const yanked = nullify(data, ['exists', 'notexists'])
+    expect(yanked).toEqual({
+      exists: 'one',
+      notexists: null
+    })
+    done()
+  })
+
+  it('should return undefined properties when using nullify within nested properties', done => {
+    const data = {
+      yank: 'one',
+      nested: {
+        exists: 'two'
+      }
+    }
+    
+    const nullify = (...args) => yank.call({ nullify: true }, ...args)
+    const nullYanked = nullify(data, ['nested: { notexists, exists }'])
+    const yanked = yank(data, ['exists', 'nested: { notexists, exists }'])
+    
+    expect(nullYanked).toEqual({
+      nested: {
+        notexists: null,
+        exists: 'two'
+      }
+    })
+    
+    expect(yanked).toEqual({
+      nested: {
+        exists: 'two'
+      }
+    })
+
+    done()
+  })
+  
+  it('should return undefined properties when using nullify within renamed properties', done => {
+    const data = {
+      yank: 'one',
+      nested: {
+        exists: 'two'
+      }
+    }
+    
+    const data2 = {
+      yank: 'one',
+      nested: {
+        exists: 'two',
+        notexists: 'three'
+      }
+    }
+    
+    const nullify = (...args) => yank.call({ nullify: true }, ...args)
+
+    const schema = ['nested: { notexists->forced, exists }']
+    const nullYanked = nullify(data, schema)
+    const nullYanked2 = yank(data2, schema)
+    const yanked = yank(data, schema)
+    
+    expect(nullYanked).toEqual({
+      nested: {
+        forced: null,
+        exists: 'two'
+      }
+    })
+    
+    expect(nullYanked).not.toEqual({
+      nested: {
+        notexists: null,
+        exists: 'two'
+      }
+    })
+    
+    expect(yanked).toEqual({
+      nested: {
+        exists: 'two'
+      }
+    })
+    
+    expect(nullYanked2).toEqual({
+      nested: {
+        forced: 'three',
+        exists: 'two',
+      }
+    })
+
+    done()
+  })
 })
