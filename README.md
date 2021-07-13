@@ -19,7 +19,7 @@ $ npm i yankee-doodle
 
 ### Demo
 
-Given the the data below, you can yank values from an object using a schema
+Given the data below, you can yank values from an object using a schema
 or collection of schemas to build a new object with those values.
 
 ``` javascript
@@ -28,7 +28,7 @@ import yank from 'yankee-doodle'
 const data = {
   firstName: 'John',
   lastName: 'Doe',
-  dateOfBirth: '1985-01-01',
+  dateOfBirth: '1970-01-01',
   addressDetails: {
     address1: '10 Downing Street',
     address2: null,
@@ -59,7 +59,7 @@ yank(data, 'firstName', 'lastName')
 // }
 ```
 
-Have a nested object? Similar to JSON markup, use `{` and `}` to yank children
+Have a nested object? Similar to JSON syntax, use `{` and `}` to yank child
 properties. This can be as nested as you like.
 
 ``` javascript

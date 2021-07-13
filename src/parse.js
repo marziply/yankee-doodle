@@ -10,22 +10,23 @@ class Parser {
     }
   }
 
-  itemise () {
-    const [key, shift] = this.tokens.shift()
-    const item = {
-      key,
+  nodeify () {
+    const [token, shift] = this.tokens.shift()
+    const [key, ...filters] = token.split('|')
+    const node = {
+      filters: this.filterfy(filters),
       children: [],
-      filters: []
+      key
     }
 
     return {
       shift,
-      item
+      node
     }
   }
 
-  tokenise (item) {
-    const [prop, ...scopes] = item.split(/(?=[}]+)|(?=:{)/g)
+  tokenise (key) {
+    const [prop, ...scopes] = key.split(/(?=[}]+)|(?=:{)/g)
     const length = +scopes.includes(':{') || -scopes.length || 0
 
     return prop === '}'
@@ -34,16 +35,16 @@ class Parser {
   }
 
   next (parent) {
-    const { item, shift } = this.itemise()
+    const { node, shift } = this.nodeify()
     const depth = this.depth
 
     this.depth += shift
 
     while (shift > 0 && this.depth > depth) {
-      this.next(item.children)
+      this.next(node.children)
     }
 
-    if (item.key) parent.push(item)
+    if (node.key) parent.push(node)
   }
 
   strip (schema) {
