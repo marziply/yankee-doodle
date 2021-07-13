@@ -1,6 +1,6 @@
 module.exports = {
-  as () {
-
+  as ({ node, args: [name] }) {
+    node.key.name = () => name
   },
   nullable () {
 

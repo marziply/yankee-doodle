@@ -7,6 +7,18 @@ class Serialiser {
   }
 
   yank (node, data, result) {
+    for (const { name, flag, args } of node.filters) {
+      const filter = filters[name]
+
+      filter({
+        flag,
+        args,
+        node,
+        data,
+        result
+      })
+    }
+
     const value = this.get(data, node.key.path)
     const name = node.key.name()
 
