@@ -16,7 +16,9 @@ module.exports = {
   extract ({ node, parent }) {
     node.options.extract.to = parent
   },
-  exec () {
+  exec ({ node, data, args: [name, ...args] }) {
+    const fn = data[name] ?? (() => null)
 
+    node.options.exec = v => fn(v, ...args)
   }
 }

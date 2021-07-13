@@ -117,6 +117,7 @@ class Parser {
 
   static options = {
     nullable: false,
+    exec: null,
     extract: {
       to: null
     }

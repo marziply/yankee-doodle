@@ -14,7 +14,7 @@ class Serialiser {
       parent
     })
 
-    const value = this.get(data, node.key.path, node.options.nullable)
+    const value = this.get(data, node.key.path, node.options)
 
     if (node.children.length) {
       this.dig(node, value, parent)
@@ -53,12 +53,15 @@ class Serialiser {
     }
   }
 
-  get (data, path, nullable) {
+  get (data, path, options) {
     const value = path.reduce((acc, curr) => acc?.[curr], data)
-
-    return nullable
-      ? value ?? null
+    const result = options.exec
+      ? options.exec(value)
       : value
+
+    return options.nullable
+      ? result ?? null
+      : result
   }
 
   serialise () {
