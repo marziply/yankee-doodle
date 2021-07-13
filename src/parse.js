@@ -12,9 +12,9 @@ class Parser {
 
   nodeify () {
     const [token, shift] = this.tokens.shift()
-    const [key, ...filters] = token.split('|')
+    const [key, ...raws] = token.split('|')
     const node = {
-      filters: this.filterfy(filters),
+      filters: this.filterfy(raws),
       children: [],
       key
     }
@@ -23,6 +23,23 @@ class Parser {
       shift,
       node
     }
+  }
+
+  filterfy (raws) {
+    return raws.map(r => {
+      const [key, params] = r.split(/(?=\([\w$_,]*\)|$)/g)
+      const [name, flag] = key.split(/(?=!)|$/g)
+      const args = params
+        ?.replace(/\(([\w$_,]*)\)/g, '$1')
+        .split(',')
+        .filter(Boolean)
+
+      return {
+        args: args ?? [],
+        flag: flag ?? null,
+        name
+      }
+    })
   }
 
   tokenise (key) {
@@ -71,22 +88,6 @@ function parse (schema) {
 
   return parser.parse()
 }
-
-const schema = `
-  id,
-  name | as(title),
-  programme.banner_video | nullable! | extract: {
-    id | as(banner_video_id),
-    handle | as(banner_video_handle)
-  },
-  space: {
-    name,
-    handle
-  },
-  sgid | exec($identity)
-`
-
-console.log(JSON.stringify(parse(schema)))
 
 module.exports = {
   Parser,
