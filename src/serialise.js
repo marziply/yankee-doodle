@@ -6,26 +6,33 @@ class Serialiser {
     this.ast = ast
   }
 
-  yank (node, data, result) {
+  yank (node, data, parent) {
     this.filter({
+      ast: this.ast,
       node,
       data,
-      result
+      parent
     })
 
     const value = this.get(data, node.key.path, node.options.nullable)
+    const extract = node.options.extract.to
+    const result = extract
+      ? parent
+      : parent[node.key.name]
 
     if (node.children.length) {
-      result[node.key.name] = {}
+      if (!extract) {
+        parent[node.key.name] = {}
+      }
 
       for (const child of node.children) {
-        this.yank(child, value, result[node.key.name])
+        this.yank(child, value, result)
       }
 
       return
     }
 
-    result[node.key.name] = value
+    parent[node.key.name] = value
   }
 
   filter (params) {

@@ -13,8 +13,8 @@ module.exports = {
       }
     })
   },
-  extract () {
-
+  extract ({ node, parent }) {
+    node.options.extract.to = parent
   },
   exec () {
 

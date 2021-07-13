@@ -117,7 +117,9 @@ class Parser {
 
   static options = {
     nullable: false,
-    extract: false
+    extract: {
+      to: null
+    }
   }
 
   static tokens = {
