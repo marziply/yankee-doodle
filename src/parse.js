@@ -2,7 +2,7 @@ class Parser {
   constructor (schema) {
     this.tokens = this
       .strip(schema)
-      .split(/,|(?<=:{)/g)
+      .split(this.reg.keys)
       .map(i => this.tokenise(i))
 
     while (this.tokens.length) {
@@ -12,7 +12,7 @@ class Parser {
 
   nodeify () {
     const [token, shift] = this.tokens.shift()
-    const [key, ...raws] = token.split('|')
+    const [key, ...raws] = token.split(Parser.tokens.DIV)
     const node = {
       filters: this.filterfy(raws),
       children: [],
@@ -28,7 +28,7 @@ class Parser {
   filterfy (raws) {
     return raws.map(r => {
       const [key, params] = r.split(/(?=\([\w$_,]*\)|$)/g)
-      const [name, flag] = key.split(/(?=!)|$/g)
+      const [name, flag] = key.split(this.reg.flags)
       const args = params
         ?.replace(/\(([\w$_,]*)\)/g, '$1')
         .split(',')
@@ -43,10 +43,10 @@ class Parser {
   }
 
   tokenise (key) {
-    const [prop, ...scopes] = key.split(/(?=[}]+)|(?=:{)/g)
-    const length = +scopes.includes(':{') || -scopes.length || 0
+    const [prop, ...scopes] = key.split(this.reg.scopes)
+    const length = +scopes.includes(Parser.tokens.OPEN) || -scopes.length || 0
 
-    return prop === '}'
+    return prop === Parser.tokens.CLOSE
       ? [null, length - 1]
       : [prop, length]
   }
@@ -65,22 +65,47 @@ class Parser {
   }
 
   strip (schema) {
+    const com = (m, v, o) => m === '\n' && v[o + 1] !== Parser.tokens.CLOSE
+
     return schema
       .trim()
-      .replace(/\s+/g, (match, offset, value) => {
-        return match === '\n' && value[offset + 1] !== '}'
-          ? ','
-          : ''
-      })
+      .replace(/\s+/g, (...args) => com(...args) ? ',' : '')
   }
 
   parse () {
     return this.tree
   }
 
+  reg = {
+    get keys () {
+      return new RegExp(`,|(?<=${Parser.tokens.OPEN})`)
+    },
+    get scopes () {
+      const { CLOSE, OPEN } = Parser.tokens
+
+      return new RegExp(`(?=[${CLOSE}]+)|(?=${OPEN})`)
+    },
+    get flags () {
+      const joined = Parser.tokens.FLAGS
+        .map(i => `\\${i}`)
+        .join('|')
+
+      return new RegExp(`(?=${joined})`)
+    }
+  }
+
   depth = 0
 
   tree = []
+
+  static tokens = {
+    OPEN: ':{',
+    CLOSE: '}',
+    DIV: '|',
+    FLAGS: [
+      '!'
+    ]
+  }
 }
 
 function parse (schema) {

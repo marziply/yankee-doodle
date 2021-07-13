@@ -15,7 +15,6 @@ module.exports = function yank (data, ...args) {
   const schema = args
     .flat()
     .join(',')
-  const ast = parse(schema)
 
-  return serialise(data, ast)
+  return serialise(data, parse(schema))
 }
