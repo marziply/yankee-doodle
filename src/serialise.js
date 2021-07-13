@@ -15,24 +15,30 @@ class Serialiser {
     })
 
     const value = this.get(data, node.key.path, node.options.nullable)
-    const extract = node.options.extract.to
-    const result = extract
-      ? parent
-      : parent[node.key.name]
 
     if (node.children.length) {
-      if (!extract) {
+      this.dig(node, value, parent)
+    } else {
+      parent[node.key.name] = value
+    }
+  }
+
+  dig (node, data, parent) {
+    const extract = node.options.extract.to
+
+    if (!data && !extract) {
+      if (node.children.some(n => n.options.nullable)) {
         parent[node.key.name] = {}
-      }
+      } else {
+        parent[node.key.name] = null
 
-      for (const child of node.children) {
-        this.yank(child, value, result)
+        return
       }
-
-      return
     }
 
-    parent[node.key.name] = value
+    for (const child of node.children) {
+      this.yank(child, data, parent[node.key.name] ?? extract)
+    }
   }
 
   filter (params) {
@@ -48,7 +54,7 @@ class Serialiser {
   }
 
   get (data, path, nullable) {
-    const value = path.reduce((acc, curr) => acc[curr], data)
+    const value = path.reduce((acc, curr) => acc?.[curr], data)
 
     return nullable
       ? value ?? null
