@@ -8,7 +8,7 @@ class Serialiser {
 
   yank (node, data, result) {
     const value = this.get(data, node.key.path)
-    const name = node.key.name
+    const name = node.key.name()
 
     if (node.children.length) {
       result[name] = {}

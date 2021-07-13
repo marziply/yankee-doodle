@@ -19,7 +19,7 @@ class Parser {
       key: {
         value: key,
         path: key.split(Parser.tokens.SEG),
-        get name () {
+        name () {
           return this.value
             .split(Parser.tokens.SEG)
             .pop()
@@ -52,7 +52,7 @@ class Parser {
 
   tokenise (key) {
     const [prop, ...scopes] = key.split(this.reg.scopes)
-    const length = +scopes.includes(Parser.tokens.OPEN) || -scopes.length || 0
+    const length = this.measure(scopes)
 
     return prop === Parser.tokens.CLOSE
       ? [null, length - 1]
@@ -70,6 +70,10 @@ class Parser {
     }
 
     if (node.key) parent.push(node)
+  }
+
+  measure (scopes) {
+    return +scopes.includes(Parser.tokens.OPEN) || -scopes.length || 0
   }
 
   strip (schema) {
