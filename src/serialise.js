@@ -1,3 +1,4 @@
+const { tokens } = require('./parse')
 const filters = require('./filters')
 
 class Serialiser {
@@ -9,6 +10,8 @@ class Serialiser {
   serialise () {
     return this.result
   }
+
+  result = {}
 }
 
 function serialise (data, ast) {

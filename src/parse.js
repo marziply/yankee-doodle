@@ -86,7 +86,8 @@ class Parser {
       return new RegExp(`(?=[${CLOSE}]+)|(?=${OPEN})`)
     },
     get flags () {
-      const joined = Parser.tokens.FLAGS
+      const joined = Object
+        .values(Parser.tokens.FLAGS)
         .map(i => `\\${i}`)
         .join('|')
 
@@ -102,9 +103,9 @@ class Parser {
     OPEN: ':{',
     CLOSE: '}',
     DIV: '|',
-    FLAGS: [
-      '!'
-    ]
+    FLAGS: {
+      MACRO: '!'
+    }
   }
 }
 
@@ -116,5 +117,6 @@ function parse (schema) {
 
 module.exports = {
   Parser,
-  parse
+  parse,
+  tokens: Parser.tokens
 }
