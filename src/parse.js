@@ -19,11 +19,9 @@ class Parser {
       key: {
         value: key,
         path: key.split(Parser.tokens.SEG),
-        name () {
-          return this.value
-            .split(Parser.tokens.SEG)
-            .pop()
-        }
+        name: key
+          .split(Parser.tokens.SEG)
+          .pop()
       }
     }
 

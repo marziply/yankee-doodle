@@ -20,19 +20,18 @@ class Serialiser {
     }
 
     const value = this.get(data, node.key.path)
-    const name = node.key.name()
 
     if (node.children.length) {
-      result[name] = {}
+      result[node.key.name] = {}
 
       for (const child of node.children) {
-        this.yank(child, value, result[name])
+        this.yank(child, value, result[node.key.name])
       }
 
       return
     }
 
-    result[name] = value
+    result[node.key.name] = value
   }
 
   get (data, path) {
