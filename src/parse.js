@@ -16,7 +16,15 @@ class Parser {
     const node = {
       filters: this.filterfy(raws),
       children: [],
-      key
+      key: {
+        value: key,
+        path: key.split(Parser.tokens.SEG),
+        get name () {
+          return this.value
+            .split(Parser.tokens.SEG)
+            .pop()
+        }
+      }
     }
 
     return {
@@ -103,6 +111,7 @@ class Parser {
     OPEN: ':{',
     CLOSE: '}',
     DIV: '|',
+    SEG: '.',
     FLAGS: {
       MACRO: '!'
     }

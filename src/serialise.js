@@ -1,4 +1,3 @@
-const { tokens } = require('./parse')
 const filters = require('./filters')
 
 class Serialiser {
@@ -7,7 +6,32 @@ class Serialiser {
     this.ast = ast
   }
 
+  yank (node, data, result) {
+    const value = this.get(data, node.key.path)
+    const name = node.key.name
+
+    if (node.children.length) {
+      result[name] = {}
+
+      for (const child of node.children) {
+        this.yank(child, value, result[name])
+      }
+
+      return
+    }
+
+    result[name] = value
+  }
+
+  get (data, path) {
+    return path.reduce((acc, curr) => acc[curr], data)
+  }
+
   serialise () {
+    for (const node of this.ast) {
+      this.yank(node, this.data, this.result)
+    }
+
     return this.result
   }
 
