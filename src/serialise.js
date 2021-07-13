@@ -7,19 +7,13 @@ class Serialiser {
   }
 
   yank (node, data, result) {
-    for (const { name, flag, args } of node.filters) {
-      const filter = filters[name]
+    this.filter({
+      node,
+      data,
+      result
+    })
 
-      filter({
-        flag,
-        args,
-        node,
-        data,
-        result
-      })
-    }
-
-    const value = this.get(data, node.key.path)
+    const value = this.get(data, node.key.path, node.options.nullable)
 
     if (node.children.length) {
       result[node.key.name] = {}
@@ -34,8 +28,24 @@ class Serialiser {
     result[node.key.name] = value
   }
 
-  get (data, path) {
-    return path.reduce((acc, curr) => acc[curr], data)
+  filter (params) {
+    for (const { name, flag, args } of params.node.filters) {
+      const filter = filters[name]
+
+      filter({
+        ...params,
+        flag,
+        args
+      })
+    }
+  }
+
+  get (data, path, nullable) {
+    const value = path.reduce((acc, curr) => acc[curr], data)
+
+    return nullable
+      ? value ?? null
+      : value
   }
 
   serialise () {

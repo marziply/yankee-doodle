@@ -16,6 +16,9 @@ class Parser {
     const node = {
       filters: this.filterfy(raws),
       children: [],
+      options: {
+        ...Parser.options
+      },
       key: {
         value: key,
         path: key.split(Parser.tokens.SEG),
@@ -42,8 +45,11 @@ class Parser {
 
       return {
         args: args ?? [],
-        flag: flag ?? null,
-        name
+        name,
+        flag: {
+          value: flag ?? null,
+          on: (f, cb) => flag === f && cb()
+        }
       }
     })
   }
@@ -109,6 +115,11 @@ class Parser {
 
   tree = []
 
+  static options = {
+    nullable: false,
+    extract: false
+  }
+
   static tokens = {
     OPEN: ':{',
     CLOSE: '}',
@@ -129,5 +140,6 @@ function parse (schema) {
 module.exports = {
   Parser,
   parse,
-  tokens: Parser.tokens
+  tokens: Parser.tokens,
+  flags: Parser.tokens.FLAGS
 }
