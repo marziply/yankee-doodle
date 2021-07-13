@@ -3,9 +3,7 @@
   "version": "1.6.0",
   "scripts": {
     "test": "jest ./tests",
-    "build": "NODE_ENV=production webpack",
-    "build:commit": "npm run build && npm run commit",
-    "commit": "git add ./dist/yankee-doodle.min.js && git commit --amend --no-edit --no-verify"
+    "build": "NODE_ENV=production webpack"
   },
   "description": "Yank values from a given object via a specified schema",
   "author": "Hayden Perry haydencwperry@gmail.com",
@@ -36,7 +34,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run test"
+      "pre-push": "npm run test"
     }
   }
 }

@@ -1,5 +1,5 @@
-const yank = require('./src/yank')
+// const yank = require('./src/yank')
+//
+// yank.nullify = (...args) => yank.call({ nullify: true }, ...args)
 
-yank.nullify = (...args) => yank.call({ nullify: true }, ...args)
-
-module.exports = yank
+module.exports = require('./src/yank')

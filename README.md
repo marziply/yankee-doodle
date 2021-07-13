@@ -1,20 +1,26 @@
 # Yankee Doodle
 
-A Lodash.pick inspired JavaScript package to pick object values from plain JavaScript objects. Other packages lacked what I needed from an object property picker so I created this. Zero dependencies and works in all major web browsers plus Node.
+A Lodash.pick inspired JavaScript package to pick object values from plain
+JavaScript objects. Other packages lacked what I needed from an object
+property picker so I created this. Zero dependencies and works in all major
+web browsers plus Node.
 
 ## Getting Started
 
-Super simple to use, although there are some limitations with what you can parse. If your objects are complicated, make them simpler! Data should be simple and easy to read.
+Super simple to use, although there are some limitations with what you can
+parse. If your objects are complicated, make them simpler! Data should be
+simple and easy to read.
 
 ### Installing
 
-```
-npm i yankee-doodle
+```sh
+$ npm i yankee-doodle
 ```
 
 ### Demo
 
-Given the the data below, you can yank values from an object using a schema or collection of schemas to build a new object with those values.
+Given the the data below, you can yank values from an object using a schema
+or collection of schemas to build a new object with those values.
 
 ``` javascript
 import yank from 'yankee-doodle'
@@ -42,7 +48,8 @@ const data = {
 }
 ```
 
-Simply spread the property names into the `yank` method and it will return only those values from the given object.
+Simply spread the property names into the `yank` method and it will return
+only those values from the given object.
 
 ``` javascript
 yank(data, 'firstName', 'lastName')
@@ -52,7 +59,8 @@ yank(data, 'firstName', 'lastName')
 // }
 ```
 
-Have a nested object? Similar to JSON markup, use `{` and `}` to yank children properties. This can be as nested as you like.
+Have a nested object? Similar to JSON markup, use `{` and `}` to yank children
+properties. This can be as nested as you like.
 
 ``` javascript
 yank(data, 'addressDetails: { address1, city }', 'firstName')
@@ -81,7 +89,8 @@ yank(data, 'nested: { data: { items: { one, two } } }')
 // }
 ```
 
-You can even provide your schema with whitespace if you felt so inclined to format it this way.
+You can even provide your schema with whitespace if you felt so inclined to
+format it this way.
 
 ``` javascript
 yank(data, `
@@ -106,10 +115,19 @@ yank(data, `
 // }
 ```
 
-You can even rename properties by providing the original property name followed by `->` and then the new property name you would like to change it to. This works for any given property anywhere in the schema, including nested properties.
+You can even rename properties by providing the original property name
+followed by `->` and then the new property name you would like to change
+it to. This works for any given property anywhere in the schema, including
+nested properties.
 
 ``` javascript
-yank(data, 'firstName->first_name', 'lastName->last_name', 'addressDetails->address_details: { city }')
+yank(data, [
+  'firstName->first_name',
+  'lastName->last_name',
+  `addressDetails->address_details: {
+    city
+  }`
+])
 // {
 //   "first_name": "John",
 //   "last_name": "Doe",
@@ -119,17 +137,29 @@ yank(data, 'firstName->first_name', 'lastName->last_name', 'addressDetails->addr
 // }
 ```
 
-Yanking properties that don't exist will result in nothing happening for that particular key. Example below demonstrates that an empty object is returned because neither of the given properties exist on the original data object.
+Yanking properties that don't exist will result in nothing happening for
+that particular key. The example below demonstrates that an empty object is
+returned because neither of the given properties exist on the original data
+object.
 
 ``` javascript
 yank(data, 'emailAddress', 'phoneNumber')
 // {}
 ```
 
-Mixing existing properties with properties that don't exist works too. The ones that don't exist simply get ignored.
+Mixing existing properties with properties that don't exist works too. The
+ones that don't exist simply get ignored.
 
 ``` javascript
-yank(data, 'addressDetails: { county }', 'addressDetails: { city }', 'dateOfBirth')
+yank(data, [
+  `addressDetails: {
+    county
+  }`,
+  `addressDetails: {
+    city
+  }`,
+  'dateOfBirth'
+])
 // {
 //   "addressDetails": {
 //     "city": "London"
@@ -138,29 +168,22 @@ yank(data, 'addressDetails: { county }', 'addressDetails: { city }', 'dateOfBirt
 // }
 ```
 
-Don't want an empty object when there are no values associated with what you're picking from? Use `yank.nullify` to return a null value instead.
+Don't want an empty object when there are no values associated with what
+you're picking from? Use `yank.nullify` to return a null value instead.
 
 ``` javascript
 yank.nullify(data, 'emailAddress')
 // null
 ```
 
-## Todo
-
-- Add Lodash style path keys for selecting deeply nested properties
-
 ## Tests
 
-`npm run test`
-
-## Authors
-
-* **Hayden Perry** - *Maintainer* - [bakewellcake](https://github.com/bakewellcake)
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+```sh
+$ npm run test
+```
 
 ## Acknowledgments
 
-* Heavily inspired by [Lodash.pick](https://github.com/lodash/lodash/blob/master/pick.js) and [supick](https://github.com/PavloAndriiesh/supick).
+* Heavily inspired by
+  [Lodash.pick](https://github.com/lodash/lodash/blob/master/pick.js)
+  and [supick](https://github.com/PavloAndriiesh/supick).

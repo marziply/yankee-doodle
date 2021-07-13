@@ -1,30 +1,26 @@
 const walk = require('./walk')
-const isObject = require('./isObject')
+const parse = require('./parse')
+// const isObject = require('./isObject')
 
-function yank (object, ...args) {
-  if (!args.length) return object
-
-  const schemaList = args.flat()
-  const yanked = {}
-
-  if (!schemaList.every(arg => typeof arg === 'string')) throw 'All arguments must be strings'
-
-  for (const schema of schemaList) {
-    const parsedArgs = schema
-      .replace(/\s+/g, '')
-      .replace(/([\w->]+)/g, '"$1"')
-      .replace(/((?<!}),|(?<=")\s?}|(?<!})$)/g, ':0$1')
-    const parsedSchema = JSON.parse(`{${parsedArgs}}`)
-    walk(object, yanked, parsedSchema, this.nullify)
+function validate (schemas) {
+  if (schemas.some(arg => typeof arg !== 'string')) {
+    throw new Error('All schemas must be strings')
   }
+}
 
-  if (this && this.nullify && isObject(yanked)) {
-    const { length } = Object.values(yanked)
+module.exports = function yank (data, ...args) {
+  if (!args.length) return data
 
-    if (!length) return null
+  validate(args)
+
+  const yanked = {}
+  const schema = args
+    .flat()
+    .join(',')
+
+  for (const ast of parse(schema)) {
+    walk(data, yanked, schema)
   }
 
   return yanked
 }
-
-module.exports = yank
