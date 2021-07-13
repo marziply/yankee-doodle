@@ -1,6 +1,5 @@
-const walk = require('./walk')
-const parse = require('./parse')
-// const isObject = require('./isObject')
+const { parse } = require('./parse')
+const { serialise } = require('./serialise')
 
 function validate (schemas) {
   if (schemas.some(arg => typeof arg !== 'string')) {
@@ -13,14 +12,10 @@ module.exports = function yank (data, ...args) {
 
   validate(args)
 
-  const yanked = {}
   const schema = args
     .flat()
     .join(',')
+  const ast = parse(schema)
 
-  for (const ast of parse(schema)) {
-    walk(data, yanked, schema)
-  }
-
-  return yanked
+  return serialise(data, ast)
 }
