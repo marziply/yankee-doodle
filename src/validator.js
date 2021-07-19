@@ -1,9 +1,16 @@
+const errors = {
+  invalidType: s => new Error(`All schemas must be strings: ${s}`)
+}
+
 function validate (schemas) {
-  if (schemas.some(arg => typeof arg !== 'string')) {
-    throw new Error('All schemas must be strings')
-  }
+  const typeIndex = schemas.findIndex(a => typeof a !== 'string')
+
+  if (typeIndex >= 0) throw errors.invalidType(schemas[typeIndex])
+
+  return schemas
 }
 
 module.exports = {
-  validate
+  validate,
+  errors
 }

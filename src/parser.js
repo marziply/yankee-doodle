@@ -1,9 +1,10 @@
 const { assign } = Object
 
 class Parser {
-  constructor (schema) {
+  constructor (schemas) {
+    this.schemas = schemas
     this.tokens = this
-      .strip(schema)
+      .strip()
       .split(this.reg.keys)
       .map(i => this.tokenise(i))
   }
@@ -76,10 +77,10 @@ class Parser {
     return +scopes.includes(Parser.tokens.OPEN) || -scopes.length || 0
   }
 
-  strip (schema) {
+  strip () {
     const com = (m, v, o) => m === '\n' && v[o + 1] !== Parser.tokens.CLOSE
 
-    return schema
+    return this.schema
       .trim()
       .replace(/\s+/g, (...args) => com(...args) ? ',' : '')
   }
@@ -114,6 +115,10 @@ class Parser {
   depth = 0
 
   tree = []
+
+  get schema () {
+    return this.schemas.join(',')
+  }
 
   static options = {
     nullable: false,
