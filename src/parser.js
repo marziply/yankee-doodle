@@ -4,10 +4,6 @@ class Parser {
       .strip(schema)
       .split(this.reg.keys)
       .map(i => this.tokenise(i))
-
-    while (this.tokens.length) {
-      this.next(this.tree)
-    }
   }
 
   nodeify () {
@@ -89,6 +85,10 @@ class Parser {
   }
 
   parse () {
+    while (this.tokens.length) {
+      this.next(this.tree)
+    }
+
     return this.tree
   }
 
@@ -132,15 +132,8 @@ class Parser {
   }
 }
 
-function parse (schema) {
-  const parser = new Parser(schema)
-
-  return parser.parse()
-}
-
 module.exports = {
   Parser,
-  parse,
   tokens: Parser.tokens,
   flags: Parser.tokens.FLAGS
 }

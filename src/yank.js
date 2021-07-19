@@ -1,11 +1,6 @@
-const { parse } = require('./parse')
-const { serialise } = require('./serialise')
-
-function validate (schemas) {
-  if (schemas.some(arg => typeof arg !== 'string')) {
-    throw new Error('All schemas must be strings')
-  }
-}
+const { Parser } = require('./parse')
+const { Serialiser } = require('./serialise')
+const { validate } = require('./validator')
 
 module.exports = function yank (data, ...args) {
   if (!args.length) return data
@@ -15,6 +10,8 @@ module.exports = function yank (data, ...args) {
   const schema = args
     .flat()
     .join(',')
+  const parser = new Parser(schema)
+  const serialiser = new Serialiser(data, parser.parse())
 
-  return serialise(data, parse(schema))
+  return serialiser.serialise()
 }
