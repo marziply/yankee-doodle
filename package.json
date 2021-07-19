@@ -1,6 +1,6 @@
 {
   "name": "yankee-doodle",
-  "version": "1.6.0",
+  "version": "2.0.0",
   "scripts": {
     "test": "jest ./tests",
     "build": "NODE_ENV=production webpack"
