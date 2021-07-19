@@ -12,7 +12,7 @@ environments.
 ## Installing
 
 ```sh
-$ npm i yankee-doodle
+$ npm i -S yankee-doodle
 ```
 
 ## Getting Started
