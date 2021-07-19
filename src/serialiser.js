@@ -50,12 +50,12 @@ class Serialiser {
   filter (params) {
     for (const { name, flag, args } of params.node.filters) {
       const filter = filters[name]
-
-      filter({
-        ...params,
+      const merged = assign(params, {
         flag,
         args
       })
+
+      filter(merged)
     }
   }
 

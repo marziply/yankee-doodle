@@ -1,4 +1,4 @@
-const { flags } = require('./parse')
+const { flags } = require('./parser')
 
 module.exports = {
   as ({ node, args: [name] }) {

@@ -1,3 +1,5 @@
+const { assign } = Object
+
 class Parser {
   constructor (schema) {
     this.tokens = this
@@ -12,9 +14,7 @@ class Parser {
     const node = {
       filters: this.filterfy(raws),
       children: [],
-      options: {
-        ...Parser.options
-      },
+      options: assign({}, Parser.options),
       key: {
         value: key,
         path: key.split(Parser.tokens.SEG),

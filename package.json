@@ -1,17 +1,16 @@
 {
   "name": "yankee-doodle",
   "version": "2.0.0",
-  "scripts": {
-    "test": "jest ./tests",
-    "build": "parcel build index.js --no-cache --out-file yankee-doodle.min.js"
-  },
   "description": "Yank values from a given object via a specified schema",
   "author": "marziply contact@marziply.dev",
+  "scripts": {
+    "test": "jest ./tests",
+    "build": "parcel build ./index.js --no-cache"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/marziply/yankee-doodle.git"
   },
-  "main": "index.js",
   "keywords": [
     "yank",
     "yanked",
@@ -24,12 +23,17 @@
   "bugs": {
     "url": "https://github.com/marziply/yankee-doodle/issues"
   },
+  "engines": {
+    "node": ">=14.x",
+    "browsers": "> 0.25%"
+  },
+  "main": "dist/yankee-doodle.min.js",
   "homepage": "https://github.com/marziply/yankee-doodle#readme",
   "license": "MIT",
   "devDependencies": {
     "husky": "^4.2.1",
     "jest": "^25.1.0",
-    "parcel-bundler": "^1.9.4"
+    "parcel": "^2.0.0-beta.2"
   },
   "husky": {
     "hooks": {
