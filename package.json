@@ -6,10 +6,10 @@
     "build": "NODE_ENV=production webpack"
   },
   "description": "Yank values from a given object via a specified schema",
-  "author": "Hayden Perry haydencwperry@gmail.com",
+  "author": "marziply contact@marziply.dev",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bakewellcake/yankee-doodle.git"
+    "url": "git+https://github.com/marziply/yankee-doodle.git"
   },
   "main": "index.js",
   "keywords": [
@@ -22,9 +22,9 @@
     "schema"
   ],
   "bugs": {
-    "url": "https://github.com/bakewellcake/yankee-doodle/issues"
+    "url": "https://github.com/marziply/yankee-doodle/issues"
   },
-  "homepage": "https://github.com/bakewellcake/yankee-doodle#readme",
+  "homepage": "https://github.com/marziply/yankee-doodle#readme",
   "license": "MIT",
   "devDependencies": {
     "husky": "^4.2.1",
