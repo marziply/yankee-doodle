@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "scripts": {
     "test": "jest ./tests",
-    "build": "parcel build index.js --out-file yankee-doodle.min.js"
+    "build": "parcel build index.js --no-cache --out-file yankee-doodle.min.js"
   },
   "description": "Yank values from a given object via a specified schema",
   "author": "marziply contact@marziply.dev",
