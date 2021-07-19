@@ -44,8 +44,8 @@ class Parser {
         .filter(Boolean)
 
       return {
-        args: args ?? [],
         name,
+        args: args ?? [],
         flag: {
           value: flag ?? null,
           on: (f, cb) => flag === f && cb()
@@ -63,8 +63,8 @@ class Parser {
       : [prop, length]
   }
 
-  next (parent) {
-    const { node, shift } = this.nodeify()
+  next (children) {
+    const { node, shift } = this.nodeify(children)
     const depth = this.depth
 
     this.depth += shift
@@ -73,7 +73,7 @@ class Parser {
       this.next(node.children)
     }
 
-    if (node.key) parent.push(node)
+    if (node.key) children.push(node)
   }
 
   measure (scopes) {
@@ -94,7 +94,7 @@ class Parser {
 
   reg = {
     get keys () {
-      return new RegExp(`,|(?<=${Parser.tokens.OPEN})`)
+      return new RegExp(`,(?![^\(]*[$\)])|(?<=${Parser.tokens.OPEN})`)
     },
     get scopes () {
       const { CLOSE, OPEN } = Parser.tokens
@@ -117,10 +117,8 @@ class Parser {
 
   static options = {
     nullable: false,
-    exec: null,
-    extract: {
-      to: null
-    }
+    extract: false,
+    exec: null
   }
 
   static tokens = {

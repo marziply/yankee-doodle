@@ -1,5 +1,7 @@
 const filters = require('./filters')
 
+const { assign } = Object
+
 class Serialiser {
   constructor (data, ast) {
     this.data = data
@@ -15,30 +17,34 @@ class Serialiser {
     })
 
     const value = this.get(data, node.key.path, node.options)
+    const set = this.set.bind(this, node, parent)
 
     if (node.children.length) {
-      this.dig(node, value, parent)
+      if (value || node.options.nullable) {
+        const children = this.dig(node, value)
+
+        if (node.options.extract) {
+          assign(parent, children)
+        } else {
+          set(children)
+        }
+      }
     } else {
-      parent[node.key.name] = value
+      set(value)
     }
   }
 
-  dig (node, data, parent) {
-    const extract = node.options.extract.to
+  dig (node, data) {
+    const result = {}
+    const nullable = node.children.every(n => !n.options.nullable)
 
-    if (!data && !extract) {
-      if (node.children.some(n => n.options.nullable)) {
-        parent[node.key.name] = {}
-      } else {
-        parent[node.key.name] = null
-
-        return
-      }
-    }
+    if (!data && nullable) return null
 
     for (const child of node.children) {
-      this.yank(child, data, parent[node.key.name] ?? extract)
+      this.yank(child, data, result)
     }
+
+    return result
   }
 
   filter (params) {
@@ -62,6 +68,10 @@ class Serialiser {
     return options.nullable
       ? result ?? null
       : result
+  }
+
+  set (node, parent, value) {
+    parent[node.key.name] = value
   }
 
   serialise () {

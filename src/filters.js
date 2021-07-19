@@ -13,8 +13,8 @@ module.exports = {
       }
     })
   },
-  extract ({ node, parent }) {
-    node.options.extract.to = parent
+  extract ({ node }) {
+    node.options.extract = true
   },
   exec ({ node, data, args: [name, ...args] }) {
     const fn = data[name] ?? (() => null)
