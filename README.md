@@ -66,14 +66,14 @@ to be the first and only schema parameter given to Yank.
 
 #### Root property access
 
-###### _Schema_
+<sup>**Schema**</sup>
 
 ```text
 firstName,
 lastName
 ```
 
-###### _Result_
+<sup>**Result**</sup>
 
 ```json
 {
@@ -86,14 +86,16 @@ lastName
 
 #### Nested properties
 
-###### _Schema_
+<sup>**Schema**</sup>
+
 ```text
 addressDetails: {
   city
 }
 ```
 
-###### _Result_
+<sup>**Result**</sup>
+
 ```json
 {
   "addressDetails": {
@@ -106,7 +108,8 @@ addressDetails: {
 
 #### Property path access
 
-###### _Schema_
+<sup>**Schema**</sup>
+
 ```text
 addressDetails.city,
 nested.data.items: {
@@ -115,7 +118,8 @@ nested.data.items: {
 }
 ```
 
-###### _Result_
+<sup>**Result**</sup>
+
 ```json
 {
   "city": "London",
@@ -141,7 +145,7 @@ an exclamation point (`!`) to the end of the filter name.
 
 Below is an example schema that makes use of filters.
 
-###### _Schema_
+<sup>**Schema**</sup>
 
 ```text
 firstName | as(first_name),
@@ -155,7 +159,7 @@ dateOfBirth | as(dob) | nullable,
 thisWontBeInTheResult
 ```
 
-###### _Result_
+<sup>**Result**</sup>
 
 ```json
 {
@@ -184,12 +188,12 @@ thisWontBeInTheResult
 Simply spread the property names into the `yank` method and it will return
 only those values from the given object.
 
-###### _Usage_
+<sup>**Usage**</sup>
 ``` javascript
 yank(data, 'firstName', 'lastName')
 ```
 
-###### _Result_
+<sup>**Result**</sup>
 ```json
 {
   "firstName": "John",
@@ -202,13 +206,13 @@ yank(data, 'firstName', 'lastName')
 Alternatively, provide an array instead, or even a spread array of arrays,
 it's all the same.
 
-###### _Usage_
+<sup>**Usage**</sup>
 
 ``` javascript
 yank(data, ['firstName'], ['lastName'])
 ```
 
-###### _Result_
+<sup>**Result**</sup>
 
 ```json
 {
@@ -222,7 +226,7 @@ yank(data, ['firstName'], ['lastName'])
 All schemas are stripped of whitespace before parsing, so it's easy and
 convenient to format them like you would for JSON.
 
-###### _Usage_
+<sup>**Usage**</sup>
 
 ``` javascript
 yank(data, `
@@ -237,7 +241,7 @@ yank(data, `
 `)
 ```
 
-###### _Result_
+<sup>**Result**</sup>
 
 ```json
 {
@@ -257,7 +261,7 @@ yank(data, `
 Have a nested object? Similar to JSON syntax, use `{` and `}` to yank child
 properties. This can be as nested as you like.
 
-###### _Usage_
+<sup>**Usage**</sup>
 
 ``` javascript
 yank(data, 'addressDetails: { address1, city }', 'firstName')
@@ -277,7 +281,7 @@ yank(data, 'addressDetails: { address1, city }', 'firstName')
 
 Deeply nesting is possible as well.
 
-###### _Usage_
+<sup>**Usage**</sup>
 
 ``` javascript
 yank(data, `
@@ -310,13 +314,13 @@ that particular key. The example below demonstrates that an empty object is
 returned because neither of the given properties exist on the original data
 object.
 
-###### _Usage_
+<sup>**Usage**</sup>
 
 ``` javascript
 yank(data, 'emailAddress', 'phoneNumber')
 ```
 
-###### _Result_
+<sup>**Result**</sup>
 ```json
 {}
 ```
@@ -326,7 +330,7 @@ yank(data, 'emailAddress', 'phoneNumber')
 Mixing existing properties with properties that don't exist works too. The
 ones that don't exist simply get ignored.
 
-###### _Usage_
+<sup>**Usage**</sup>
 
 ``` javascript
 yank(data, [
@@ -340,7 +344,7 @@ yank(data, [
 ])
 ```
 
-###### _Result_
+<sup>**Result**</sup>
 
 ```json
 {
