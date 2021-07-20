@@ -1,5 +1,5 @@
 const errors = {
-  invalidType: s => new Error(`All schemas must be strings: ${s}`)
+  invalidType: () => new Error('All schemas must be strings')
 }
 
 function validate (schemas) {
