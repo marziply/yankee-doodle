@@ -3,48 +3,56 @@ const data = require('./data')
 
 describe('src/yank', () => {
   it('should yank provided properties from a data object', () => {
-    const yanked = yank(data, 'firstName', 'lastName')
+    const result = yank(data, 'firstName', 'lastName')
 
-    expect(yanked).toEqual({
+    expect(result).toEqual({
       firstName: 'John',
       lastName: 'Doe'
     })
   })
 
   it('should yank provided properties as an array from a data object', () => {
-    const yanked = yank(data, [
+    const result = yank(data, [
       'firstName',
       'lastName'
     ])
 
-    expect(yanked).toEqual({
+    expect(result).toEqual({
       firstName: 'John',
       lastName: 'Doe'
     })
   })
 
   it('should ignore all properties that do not exist on the data object', () => {
-    const yanked = yank(data, 'emailAddress', 'firstName')
+    const result = yank(data, 'emailAddress', 'firstName')
 
-    expect(yanked.emailAddress).toBeUndefined()
-    expect(yanked).toEqual({
+    expect(result.emailAddress).toBeUndefined()
+    expect(result).toEqual({
       firstName: 'John'
     })
   })
 
   it('should return nested results', () => {
-    const yanked = yank(data, `
+    const result = yank(data, `
       addressDetails: {
         city,
         postcode
       }
     `)
 
-    expect(yanked).toEqual({
+    expect(result).toEqual({
       addressDetails: {
         city: 'London',
         postcode: 'SW1A 2AB'
       }
+    })
+  })
+
+  it('should return properties via a property path', () => {
+    const result = yank(data, 'nested.data.items.one')
+
+    expect(result).toEqual({
+      one: 'one'
     })
   })
 })

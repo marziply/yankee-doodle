@@ -174,7 +174,7 @@ thisWontBeInTheResult
 }
 ```
 
-##### Available filters
+#### Available filters
 
 | Name | Arguments | Macro | Description |
 |:---|:---|:---|:---|
@@ -360,7 +360,7 @@ yank(data, [
 ## Tests
 
 ```sh
-$ npm run test
+$ npm test
 ```
 
 ## Acknowledgments
