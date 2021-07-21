@@ -1,4 +1,5 @@
 const filters = require('./filters')
+const { errors } = require('./validator')
 
 const { assign } = Object
 
@@ -54,6 +55,8 @@ class Serialiser {
         flag,
         args
       })
+
+      if (!filter) throw errors.filterNotFound(name)
 
       filter(merged)
     }

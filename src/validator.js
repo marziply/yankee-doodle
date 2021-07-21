@@ -1,5 +1,6 @@
 const errors = {
-  invalidType: () => new Error('All schemas must be strings')
+  invalidType: () => new Error('All schemas must be strings'),
+  filterNotFound: s => new Error(`Filter "${s}" could not be found`)
 }
 
 function validate (schemas) {

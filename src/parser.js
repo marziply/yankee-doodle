@@ -1,5 +1,3 @@
-const { assign } = Object
-
 class Parser {
   constructor (schemas) {
     this.schemas = schemas
@@ -13,9 +11,11 @@ class Parser {
     const [token, shift] = this.tokens.shift()
     const [key, ...raws] = token.split(Parser.tokens.DIV)
     const node = {
-      filters: this.filterfy(raws),
       children: [],
-      options: assign({}, Parser.options),
+      filters: this.filterfy(raws),
+      options: {
+        ...Parser.options
+      },
       key: {
         value: key,
         path: key.split(Parser.tokens.SEG),
