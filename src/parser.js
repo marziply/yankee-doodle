@@ -78,11 +78,12 @@ class Parser {
   }
 
   strip () {
-    const com = (m, v, o) => m === '\n' && v[o + 1] !== Parser.tokens.CLOSE
+    const isNewLine = match => match === '\n'
+    const isClose = (val, offset) => val[offset + 1] === Parser.tokens.CLOSE
 
     return this.schema
       .trim()
-      .replace(/\s+/g, (...args) => com(...args) ? ',' : '')
+      .replace(/\s+/g, (m, v, o) => isNewLine(m) && !isClose(v, o) ? ',' : '')
   }
 
   parse () {
