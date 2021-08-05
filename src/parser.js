@@ -96,7 +96,7 @@ class Parser {
 
   reg = {
     get keys () {
-      return new RegExp(`,(?![^\(]*[$\)])|(?<=${Parser.tokens.OPEN})`)
+      return new RegExp(`,(?![^(]*[)])|(?<=${Parser.tokens.OPEN})`)
     },
     get scopes () {
       const { CLOSE, OPEN } = Parser.tokens

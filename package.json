@@ -5,7 +5,8 @@
   "author": "marziply contact@marziply.dev",
   "scripts": {
     "test": "jest ./tests",
-    "build": "parcel build ./index.js --no-cache"
+    "build": "parcel build ./index.js --no-cache",
+    "lint": "eslint ./src/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -31,13 +32,16 @@
   "homepage": "https://github.com/marziply/yankee-doodle#readme",
   "license": "MIT",
   "devDependencies": {
+    "@babel/eslint-parser": "^7.14.9",
+    "@babel/eslint-plugin": "^7.14.5",
+    "eslint": "^7.32.0",
     "husky": "^4.2.1",
-    "jest": "^25.1.0",
+    "jest": "^27.0.6",
     "parcel": "^2.0.0-beta.2"
   },
   "husky": {
     "hooks": {
-      "pre-push": "npm run test"
+      "pre-push": "npm run lint && npm run test"
     }
   }
 }

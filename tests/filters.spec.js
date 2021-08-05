@@ -1,6 +1,6 @@
 const yank = require('../src/yank')
-const data = require('./data')
 const filters = require('../src/filters')
+const data = require('./data')
 
 describe('src/filters', () => {
   describe('as', () => {

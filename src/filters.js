@@ -1,5 +1,7 @@
 const { flags } = require('./parser')
 
+// @TODO: Add format filter (snake case, camel case, etc.)
+
 module.exports = {
   as ({ node, args: [name] }) {
     node.key.name = name
