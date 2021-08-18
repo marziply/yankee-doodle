@@ -1,6 +1,9 @@
 const { flags } = require('./parser')
 
 // @TODO: Add format filter (snake case, camel case, etc.)
+// @TODO: Add empty string/object/array filter
+
+const noop = () => null
 
 module.exports = {
   as ({ node, args: [name] }) {
@@ -19,7 +22,7 @@ module.exports = {
     node.options.extract = true
   },
   exec ({ node, data, args: [name, ...args] }) {
-    const fn = data[name] ?? (() => null)
+    const fn = data[name] ?? noop
 
     node.options.exec = v => fn(v, ...args)
   }

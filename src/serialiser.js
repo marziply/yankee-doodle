@@ -11,7 +11,6 @@ class Serialiser {
 
   yank (node, data, parent) {
     this.filter({
-      ast: this.ast,
       node,
       data,
       parent
@@ -62,6 +61,14 @@ class Serialiser {
     }
   }
 
+  serialise () {
+    for (const node of this.ast) {
+      this.yank(node, this.data, this.result)
+    }
+
+    return this.result
+  }
+
   get (data, path, options) {
     const value = path.reduce((acc, curr) => acc?.[curr], data)
     const result = options.exec
@@ -75,14 +82,6 @@ class Serialiser {
 
   set (node, parent, value) {
     parent[node.key.name] = value
-  }
-
-  serialise () {
-    for (const node of this.ast) {
-      this.yank(node, this.data, this.result)
-    }
-
-    return this.result
   }
 
   result = {}
