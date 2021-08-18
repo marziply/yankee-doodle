@@ -1,9 +1,9 @@
-const filters = require('./filters')
-const { errors } = require('./validator')
+import filters from './filters.js'
+import { errors } from './validator.js'
 
 const { assign } = Object
 
-class Serialiser {
+export default class Serialiser {
   constructor (data, ast) {
     this.data = data
     this.ast = ast
@@ -85,8 +85,4 @@ class Serialiser {
   }
 
   result = {}
-}
-
-module.exports = {
-  Serialiser
 }

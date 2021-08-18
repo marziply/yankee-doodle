@@ -1,4 +1,4 @@
-class Parser {
+export default class Parser {
   constructor (schemas) {
     this.schemas = schemas
     this.tokens = this
@@ -138,8 +138,6 @@ class Parser {
   }
 }
 
-module.exports = {
-  Parser,
-  tokens: Parser.tokens,
-  flags: Parser.tokens.FLAGS
-}
+export const tokens = Parser.tokens
+
+export const flags = Parser.tokens.FLAGS

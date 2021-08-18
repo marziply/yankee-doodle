@@ -1,8 +1,8 @@
-const { Parser } = require('./parser')
-const { Serialiser } = require('./serialiser')
-const { validate } = require('./validator')
+import Parser from './parser.js'
+import Serialiser from './serialiser.js'
+import validate from './validator.js'
 
-module.exports = function yank (data, ...args) {
+export default function yank (data, ...args) {
   const schemas = validate(args.flat())
   const parser = new Parser(schemas)
   const serialiser = new Serialiser(data, parser.parse())

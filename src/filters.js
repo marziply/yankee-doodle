@@ -1,11 +1,11 @@
-const { flags } = require('./parser')
+import { flags } from './parser.js'
 
 // @TODO: Add format filter (snake case, camel case, etc.)
 // @TODO: Add empty string/object/array filter
 
 const noop = () => null
 
-module.exports = {
+export default {
   as ({ node, args: [name] }) {
     node.key.name = name
   },

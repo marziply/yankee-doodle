@@ -1,1 +1,1 @@
-module.exports = require('./src/yank')
+export { default } from './src/yank.js'
