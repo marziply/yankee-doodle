@@ -1,4 +1,4 @@
-const { validate } = require('../src/validator')
+import validate from '../src/validator.js'
 
 describe('src/validator', () => {
   it('should return the schemas is all schemas are strings', () => {

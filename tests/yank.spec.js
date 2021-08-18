@@ -1,5 +1,5 @@
-const yank = require('../src/yank')
-const data = require('./data')
+import yank from '../src/yank.js'
+import data from './data.json'
 
 describe('src/yank', () => {
   it('should yank provided properties from a data object', () => {

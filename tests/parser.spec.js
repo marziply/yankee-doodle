@@ -1,4 +1,5 @@
-const { Parser, tokens } = require('../src/parser')
+import { jest } from '@jest/globals'
+import Parser, { tokens } from '../src/parser.js'
 
 const schemas = [
   'firstName',

@@ -1,6 +1,7 @@
-const yank = require('../src/yank')
-const filters = require('../src/filters')
-const data = require('./data')
+import { jest } from '@jest/globals'
+import yank from '../src/yank.js'
+import filters from '../src/filters.js'
+import data from './data.json'
 
 describe('src/filters', () => {
   describe('as', () => {

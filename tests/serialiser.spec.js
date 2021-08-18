@@ -1,5 +1,5 @@
-const { Serialiser } = require('../src/serialiser')
-const data = require('./data')
+import Serialiser from '../src/serialiser.js'
+import data from './data.json'
 
 const node = {
   children: [],

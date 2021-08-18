@@ -3,8 +3,9 @@
   "version": "2.0.0",
   "description": "Yank values from a given object via a specified schema",
   "author": "marziply contact@marziply.dev",
+  "type": "module",
   "scripts": {
-    "test": "node --no-warnings --experimental-vm-modules node_modules/.bin/jest.js",
+    "test": "bin/test.sh",
     "build": "rollup -c",
     "lint": "eslint ./src/*.js"
   },
@@ -28,7 +29,7 @@
     "node": ">=14.x",
     "browsers": "> 0.25%"
   },
-  "main": "dist/yankee-doodle.min.js",
+  "main": "./index.js",
   "homepage": "https://github.com/marziply/yankee-doodle#readme",
   "license": "MIT",
   "devDependencies": {
