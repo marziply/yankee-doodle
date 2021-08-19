@@ -1,4 +1,33 @@
 'use strict';
+/**
+ * Parses the given schemas into a somewhat simplified abstract syntax tree
+ * (AST) which enables modules later on to decipher the properties to pick from
+ * the given data object.
+ *
+ * @param {Array.<string>} schemas - Set of schemas to generate the AST from.
+ */
+
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _wrapNativeSuper(Class) { var _cache = typeof Map === "function" ? new Map() : undefined; _wrapNativeSuper = function _wrapNativeSuper(Class) { if (Class === null || !_isNativeFunction(Class)) return Class; if (typeof Class !== "function") { throw new TypeError("Super expression must either be null or a function"); } if (typeof _cache !== "undefined") { if (_cache.has(Class)) return _cache.get(Class); _cache.set(Class, Wrapper); } function Wrapper() { return _construct(Class, arguments, _getPrototypeOf(this).constructor); } Wrapper.prototype = Object.create(Class.prototype, { constructor: { value: Wrapper, enumerable: false, writable: true, configurable: true } }); return _setPrototypeOf(Wrapper, Class); }; return _wrapNativeSuper(Class); }
+
+function _construct(Parent, args, Class) { if (_isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -72,6 +101,12 @@ var Parser = /*#__PURE__*/function () {
       return _this.tokenise(i);
     });
   }
+  /**
+   * Generates a new node from the next item in the tokens queue.
+   *
+   * @returns {object} - Generated node.
+   */
+
 
   _createClass(Parser, [{
     key: "nodeify",
@@ -84,11 +119,11 @@ var Parser = /*#__PURE__*/function () {
       var _token$split = token.split(Parser.tokens.DIV),
           _token$split2 = _toArray(_token$split),
           key = _token$split2[0],
-          raws = _token$split2.slice(1);
+          args = _token$split2.slice(1);
 
       var node = {
         children: [],
-        filters: this.filterfy(raws),
+        filters: this.filterfy(args),
         options: _objectSpread({}, Parser.options),
         key: {
           value: key,
@@ -101,12 +136,20 @@ var Parser = /*#__PURE__*/function () {
         node: node
       };
     }
+    /**
+     * Generates a set of filters from the given property.
+     *
+     * @param {Array.<string>} args - Filter arguments.
+     *
+     * @returns {Array.<object>} - Property filter schemas.
+     */
+
   }, {
     key: "filterfy",
-    value: function filterfy(raws) {
+    value: function filterfy(args) {
       var _this2 = this;
 
-      return raws.map(function (r) {
+      return args.map(function (r) {
         var _r$split = r.split(/(?=\([\w$_,]*\)|$)/g),
             _r$split2 = _slicedToArray(_r$split, 2),
             key = _r$split2[0],
@@ -130,6 +173,17 @@ var Parser = /*#__PURE__*/function () {
         };
       });
     }
+    /**
+     * Tokenises the given key into an array of key name and its respective
+     * scope depth. Lengths more than 0 increase the depth of the scope, 0
+     * changes nothing, and lengths less than 0 decrease the depth of the
+     * scope.
+     *
+     * @param {string} key - Token item to determine the depth value.
+     *
+     * @returns {Array.<string|null, number>} - Defined depth per schema key.
+     */
+
   }, {
     key: "tokenise",
     value: function tokenise(key) {
@@ -267,20 +321,64 @@ var filters = {
     };
   }
 };
-var errors = {
-  invalidType: function invalidType() {
-    return new Error('All schemas must be strings');
-  },
-  filterNotFound: function filterNotFound(s) {
-    return new Error("Filter \"".concat(s, "\" could not be found"));
+
+var InvalidTypeError = /*#__PURE__*/function (_Error) {
+  _inherits(InvalidTypeError, _Error);
+
+  var _super = _createSuper(InvalidTypeError);
+
+  function InvalidTypeError() {
+    var _this3;
+
+    _classCallCheck(this, InvalidTypeError);
+
+    _this3 = _super.apply(this, arguments);
+    _this3.message = 'All schemas must be strings';
+    return _this3;
   }
-};
+
+  return InvalidTypeError;
+}( /*#__PURE__*/_wrapNativeSuper(Error));
+
+var FilterNotFoundError = /*#__PURE__*/function (_Error2) {
+  _inherits(FilterNotFoundError, _Error2);
+
+  var _super2 = _createSuper(FilterNotFoundError);
+
+  function FilterNotFoundError(name) {
+    var _this4;
+
+    _classCallCheck(this, FilterNotFoundError);
+
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    _this4 = _super2.call.apply(_super2, [this].concat(args));
+    _this4.message = "Filter \"".concat(name, "\" could not be found");
+    _this4.data = name;
+    return _this4;
+  }
+
+  return FilterNotFoundError;
+}( /*#__PURE__*/_wrapNativeSuper(Error));
+/**
+ * Validate the provided schema matches the syntax allowed for yanking
+ * properties via this package.
+ *
+ * @param {Array.<string>} schemas - Set of schemas to yank against.
+ *
+ * @returns {Array.<string>} - The given value if nothing failed.
+ *
+ * @throws {Error} - Invalid type.
+ */
+
 
 function validate(schemas) {
   var typeIndex = schemas.findIndex(function (a) {
     return typeof a !== 'string';
   });
-  if (typeIndex >= 0) throw errors.invalidType(schemas[typeIndex]);
+  if (typeIndex >= 0) throw new InvalidTypeError(schemas[typeIndex]);
   return schemas;
 }
 
@@ -363,7 +461,7 @@ var Serialiser = /*#__PURE__*/function () {
             flag: flag,
             args: args
           });
-          if (!filter) throw errors.filterNotFound(name);
+          if (!filter) throw new FilterNotFoundError(name);
           filter(merged);
         }
       } catch (err) {
@@ -409,10 +507,22 @@ var Serialiser = /*#__PURE__*/function () {
 
   return Serialiser;
 }();
+/**
+ * Yanks properties from a given data object via a set of schemas. Values are
+ * yanked from the data object based on keys provided within the schema, which
+ * individually can be filtered to be transform or otherwise rejected from the
+ * output.
+ *
+ * @param {object} data - Data to yank properties from.
+ * @param {...string|Array.<string>} args - Collection of schemas.
+ *
+ * @returns {object} - Data picked from source object via the schema.
+ */
+
 
 function yank(data) {
-  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    args[_key - 1] = arguments[_key];
+  for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+    args[_key2 - 1] = arguments[_key2];
   }
 
   var schemas = validate(args.flat());
