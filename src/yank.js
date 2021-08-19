@@ -13,10 +13,12 @@ import validate from './validator.js'
  *
  * @returns {object} - Data picked from source object via the schema.
  */
-export default function yank (data, ...args) {
+export function yank (data, ...args) {
   const schemas = validate(args.flat())
   const parser = new Parser(schemas)
   const serialiser = new Serialiser(data, parser.parse())
 
   return serialiser.serialise()
 }
+
+export default yank

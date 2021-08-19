@@ -1,5 +1,5 @@
 import filters from './filters.js'
-import { errors } from './validator.js'
+import { FilterNotFoundError } from './validator.js'
 
 const { assign } = Object
 
@@ -55,7 +55,7 @@ export default class Serialiser {
         args
       })
 
-      if (!filter) throw errors.filterNotFound(name)
+      if (!filter) throw new FilterNotFoundError(name)
 
       filter(merged)
     }

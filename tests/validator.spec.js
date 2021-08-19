@@ -1,4 +1,4 @@
-import validate from '../src/validator.js'
+import validate, { InvalidTypeError } from '../src/validator.js'
 
 describe('src/validator', () => {
   it('should return the schemas is all schemas are strings', () => {
@@ -13,7 +13,9 @@ describe('src/validator', () => {
 
     try {
       validate(schemas)
-    } catch (_) {
+    } catch (error) {
+      expect(error).toBeInstanceOf(InvalidTypeError)
+
       done()
     }
   })

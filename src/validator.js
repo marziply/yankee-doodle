@@ -1,6 +1,18 @@
-export const errors = {
-  invalidType: () => new Error('All schemas must be strings'),
-  filterNotFound: s => new Error(`Filter "${s}" could not be found`)
+export class InvalidTypeError extends Error {
+  constructor () {
+    super(...arguments)
+
+    this.message = 'All schemas must be strings'
+  }
+}
+
+export class FilterNotFoundError extends Error {
+  constructor (name, ...args) {
+    super(...args)
+
+    this.message = `Filter "${name}" could not be found`
+    this.data = name
+  }
 }
 
 /**
@@ -16,7 +28,7 @@ export const errors = {
 export default function validate (schemas) {
   const typeIndex = schemas.findIndex(a => typeof a !== 'string')
 
-  if (typeIndex >= 0) throw errors.invalidType(schemas[typeIndex])
+  if (typeIndex >= 0) throw new InvalidTypeError(schemas[typeIndex])
 
   return schemas
 }
