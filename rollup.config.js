@@ -15,10 +15,11 @@ export default {
       exports: 'default',
       plugins: [
         getBabelOutputPlugin({
+          comments: false,
           presets: [
             '@babel/env'
           ]
-        }),
+        })
       ]
     },
     {

@@ -1,11 +1,4 @@
 'use strict';
-/**
- * Parses the given schemas into a somewhat simplified abstract syntax tree
- * (AST) which enables modules later on to decipher the properties to pick from
- * the given data object.
- *
- * @param {Array.<string>} schemas - Set of schemas to generate the AST from.
- */
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -65,7 +58,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var Parser = /*#__PURE__*/function () {
+var Parser = function () {
   function Parser(schemas) {
     var _this = this;
 
@@ -101,12 +94,6 @@ var Parser = /*#__PURE__*/function () {
       return _this.tokenise(i);
     });
   }
-  /**
-   * Generates a new node from the next item in the tokens queue.
-   *
-   * @returns {object} - Generated node.
-   */
-
 
   _createClass(Parser, [{
     key: "nodeify",
@@ -136,14 +123,6 @@ var Parser = /*#__PURE__*/function () {
         node: node
       };
     }
-    /**
-     * Generates a set of filters from the given property.
-     *
-     * @param {Array.<string>} args - Filter arguments.
-     *
-     * @returns {Array.<object>} - Property filter schemas.
-     */
-
   }, {
     key: "filterfy",
     value: function filterfy(args) {
@@ -173,17 +152,6 @@ var Parser = /*#__PURE__*/function () {
         };
       });
     }
-    /**
-     * Tokenises the given key into an array of key name and its respective
-     * scope depth. Lengths more than 0 increase the depth of the scope, 0
-     * changes nothing, and lengths less than 0 decrease the depth of the
-     * scope.
-     *
-     * @param {string} key - Token item to determine the depth value.
-     *
-     * @returns {Array.<string|null, number>} - Defined depth per schema key.
-     */
-
   }, {
     key: "tokenise",
     value: function tokenise(key) {
@@ -266,8 +234,7 @@ _defineProperty(Parser, "tokens", {
   }
 });
 
-var flags = Parser.tokens.FLAGS; // @TODO: Add format filter (snake case, camel case, etc.)
-// @TODO: Add empty string/object/array filter
+var flags = Parser.tokens.FLAGS;
 
 var noop = function noop() {
   return null;
@@ -322,7 +289,7 @@ var filters = {
   }
 };
 
-var InvalidTypeError = /*#__PURE__*/function (_Error) {
+var InvalidTypeError = function (_Error) {
   _inherits(InvalidTypeError, _Error);
 
   var _super = _createSuper(InvalidTypeError);
@@ -338,9 +305,9 @@ var InvalidTypeError = /*#__PURE__*/function (_Error) {
   }
 
   return InvalidTypeError;
-}( /*#__PURE__*/_wrapNativeSuper(Error));
+}(_wrapNativeSuper(Error));
 
-var FilterNotFoundError = /*#__PURE__*/function (_Error2) {
+var FilterNotFoundError = function (_Error2) {
   _inherits(FilterNotFoundError, _Error2);
 
   var _super2 = _createSuper(FilterNotFoundError);
@@ -361,18 +328,7 @@ var FilterNotFoundError = /*#__PURE__*/function (_Error2) {
   }
 
   return FilterNotFoundError;
-}( /*#__PURE__*/_wrapNativeSuper(Error));
-/**
- * Validate the provided schema matches the syntax allowed for yanking
- * properties via this package.
- *
- * @param {Array.<string>} schemas - Set of schemas to yank against.
- *
- * @returns {Array.<string>} - The given value if nothing failed.
- *
- * @throws {Error} - Invalid type.
- */
-
+}(_wrapNativeSuper(Error));
 
 function validate(schemas) {
   var typeIndex = schemas.findIndex(function (a) {
@@ -384,7 +340,7 @@ function validate(schemas) {
 
 var assign = Object.assign;
 
-var Serialiser = /*#__PURE__*/function () {
+var Serialiser = function () {
   function Serialiser(data, ast) {
     _classCallCheck(this, Serialiser);
 
@@ -507,18 +463,6 @@ var Serialiser = /*#__PURE__*/function () {
 
   return Serialiser;
 }();
-/**
- * Yanks properties from a given data object via a set of schemas. Values are
- * yanked from the data object based on keys provided within the schema, which
- * individually can be filtered to be transform or otherwise rejected from the
- * output.
- *
- * @param {object} data - Data to yank properties from.
- * @param {...string|Array.<string>} args - Collection of schemas.
- *
- * @returns {object} - Data picked from source object via the schema.
- */
-
 
 function yank(data) {
   for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
