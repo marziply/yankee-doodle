@@ -89,8 +89,16 @@ export default class Parser {
       : [prop, length]
   }
 
-  next (children) {
-    const { node, shift } = this.nodeify(children)
+  /**
+   * Retrieves the next top-level token in the tokens array and then descends
+   * into all of it's children tokens.
+   *
+   * @param {Array.<Node>} parent - Parent node array to push children to.
+   *
+   * @returns {void}
+   */
+  next (parent) {
+    const { node, shift } = this.nodeify(parent)
     const depth = this.depth
 
     this.depth += shift
@@ -99,13 +107,26 @@ export default class Parser {
       this.next(node.children)
     }
 
-    if (node.key) children.push(node)
+    if (node.key) parent.push(node)
   }
 
-  measure (scopes) {
-    return +scopes.includes(Parser.tokens.OPEN) || -scopes.length || 0
+  /**
+   * Measures the length of the given scope from a series of tokens.
+   *
+   * @param {Array.<string>} tokens - Token strings to measure scope from.
+   *
+   * @returns {number} - Scope size.
+   */
+  measure (tokens) {
+    return +tokens.includes(Parser.tokens.OPEN) || -tokens.length || 0
   }
 
+  /**
+   * Strips all whitespace from the schema while also joining newlines between
+   * properties with a comma.
+   *
+   * @returns {string} - Stripped schema.
+   */
   strip () {
     const isNewLine = match => match === '\n'
     const isClose = (val, offset) => val[offset + 1] === Parser.tokens.CLOSE
@@ -115,6 +136,12 @@ export default class Parser {
       .replace(/\s+/g, (m, v, o) => isNewLine(m) && !isClose(v, o) ? ',' : '')
   }
 
+  /**
+   * Parses all tokens in the schema into a really simple abstract syntax tree
+   * for the serialiser to iterate through.
+   *
+   * @returns {Array.<Node>} - Abstract syntax tree of token nodes.
+   */
   parse () {
     while (this.tokens.length) {
       this.next(this.tree)
