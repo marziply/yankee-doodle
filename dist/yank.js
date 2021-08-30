@@ -159,17 +159,16 @@ var noop = function noop() {
 };
 
 var filters = {
-  as: function as(_ref, _ref2) {
-    var node = _ref.node;
-
-    var _ref2$args = _slicedToArray(_ref2.args, 1),
-        name = _ref2$args[0];
+  as: function as(_ref) {
+    var node = _ref.node,
+        _ref$args = _slicedToArray(_ref.args, 1),
+        name = _ref$args[0];
 
     node.key.name = name;
   },
-  nullable: function nullable(_ref3, _ref4) {
-    var node = _ref3.node;
-    var flag = _ref4.flag;
+  nullable: function nullable(_ref2) {
+    var node = _ref2.node,
+        flag = _ref2.flag;
     node.options.nullable = true;
     flag.on(flags.MACRO, function () {
       var _iterator = _createForOfIteratorHelper(node.children),
@@ -187,19 +186,18 @@ var filters = {
       }
     });
   },
-  extract: function extract(_ref5) {
-    var node = _ref5.node;
+  extract: function extract(_ref3) {
+    var node = _ref3.node;
     node.options.extract = true;
   },
-  exec: function exec(_ref6, _ref7) {
+  exec: function exec(_ref4) {
     var _data$name;
 
-    var node = _ref6.node,
-        data = _ref6.data;
-
-    var _ref7$args = _toArray(_ref7.args),
-        name = _ref7$args[0],
-        args = _ref7$args.slice(1);
+    var node = _ref4.node,
+        data = _ref4.data,
+        _ref4$args = _toArray(_ref4.args),
+        name = _ref4$args[0],
+        args = _ref4$args.slice(1);
 
     var fn = (_data$name = data[name]) !== null && _data$name !== void 0 ? _data$name : noop;
 
@@ -231,6 +229,16 @@ var Filter = function () {
   }
 
   _createClass(Filter, [{
+    key: "apply",
+    value: function apply(node, data) {
+      return this.fn({
+        flag: this.flag,
+        args: this.args,
+        node: node,
+        data: data
+      });
+    }
+  }, {
     key: "fn",
     get: function get() {
       var fn = filters[this.name];
@@ -257,27 +265,52 @@ var Property = function Property(name) {
   this.name = this.path.at(-1);
 };
 
-var Node = function Node(token, shift) {
-  _classCallCheck(this, Node);
+var Node = function () {
+  function Node(token, shift) {
+    _classCallCheck(this, Node);
 
-  _defineProperty(this, "children", []);
+    _defineProperty(this, "children", []);
 
-  _defineProperty(this, "options", _objectSpread({}, Node.options));
+    _defineProperty(this, "options", _objectSpread({}, Node.options));
 
-  var _token$split = token.split(tokens.DIV),
-      _token$split2 = _toArray(_token$split),
-      name = _token$split2[0],
-      args = _token$split2.slice(1);
+    var _token$split = token.split(tokens.DIV),
+        _token$split2 = _toArray(_token$split),
+        name = _token$split2[0],
+        args = _token$split2.slice(1);
 
-  this.token = token;
-  this.shift = shift;
-  this.name = name;
-  this.args = args;
-  this.key = new Property(name);
-  this.filters = args.map(function (arg) {
-    return new Filter(arg);
-  });
-};
+    this.token = token;
+    this.shift = shift;
+    this.name = name;
+    this.args = args;
+    this.key = new Property(name);
+    this.filters = args.map(function (arg) {
+      return new Filter(arg);
+    });
+  }
+
+  _createClass(Node, [{
+    key: "filter",
+    value: function filter(data) {
+      var _iterator2 = _createForOfIteratorHelper(this.filters),
+          _step2;
+
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var filter = _step2.value;
+          filter.apply(this, data);
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+
+      return this;
+    }
+  }]);
+
+  return Node;
+}();
 
 _defineProperty(Node, "options", {
   nullable: false,
@@ -390,8 +423,8 @@ var Serialiser = function () {
 
   _createClass(Serialiser, [{
     key: "yank",
-    value: function yank(node, data, parent) {
-      this.filter(node, data);
+    value: function yank(root, data, parent) {
+      var node = root.filter(data);
       var value = this.get(data, node.key.path, node.options);
       var set = this.set.bind(this, node, parent);
 
@@ -418,49 +451,21 @@ var Serialiser = function () {
       });
       if (!data && nullable) return null;
 
-      var _iterator2 = _createForOfIteratorHelper(node.children),
-          _step2;
-
-      try {
-        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          var child = _step2.value;
-          this.yank(child, data, result);
-        }
-      } catch (err) {
-        _iterator2.e(err);
-      } finally {
-        _iterator2.f();
-      }
-
-      return result;
-    }
-  }, {
-    key: "filter",
-    value: function filter(node, data) {
-      var params = {
-        node: node,
-        data: data
-      };
-
-      var _iterator3 = _createForOfIteratorHelper(node.filters),
+      var _iterator3 = _createForOfIteratorHelper(node.children),
           _step3;
 
       try {
         for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-          var _step3$value = _step3.value,
-              fn = _step3$value.fn,
-              flag = _step3$value.flag,
-              args = _step3$value.args;
-          fn(params, {
-            flag: flag,
-            args: args
-          });
+          var child = _step3.value;
+          this.yank(child, data, result);
         }
       } catch (err) {
         _iterator3.e(err);
       } finally {
         _iterator3.f();
       }
+
+      return result;
     }
   }, {
     key: "serialise",

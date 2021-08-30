@@ -80,10 +80,10 @@ class Flag {
 const noop = () => null;
 
 const filters = {
-  as ({ node }, { args: [name] }) {
+  as ({ node, args: [name] }) {
     node.key.name = name;
   },
-  nullable ({ node }, { flag }) {
+  nullable ({ node, flag }) {
     node.options.nullable = true;
 
     flag.on(flags.MACRO, () => {
@@ -95,7 +95,7 @@ const filters = {
   extract ({ node }) {
     node.options.extract = true;
   },
-  exec ({ node, data }, { args: [name, ...args] }) {
+  exec ({ node, data, args: [name, ...args] }) {
     const fn = data[name] ?? noop;
 
     node.options.exec = v => fn(v, ...args);
@@ -112,6 +112,15 @@ class Filter {
     this.params = params;
     this.name = name;
     this.flag = new Flag(flag);
+  }
+
+  apply (node, data) {
+    return this.fn({
+      flag: this.flag,
+      args: this.args,
+      node,
+      data
+    })
   }
 
   get fn () {
@@ -148,6 +157,22 @@ class Node {
     this.args = args;
     this.key = new Property(name);
     this.filters = args.map(arg => new Filter(arg));
+  }
+
+  /**
+   * Applies filters defined in the AST schema with parameters set within the
+   * schema.
+   *
+   * @param {object} data - Data to extract properties from.
+   *
+   * @returns {Node} - Node with filters applied.
+   */
+  filter (data) {
+    for (const filter of this.filters) {
+      filter.apply(this, data);
+    }
+
+    return this
   }
 
   children = []
@@ -297,15 +322,14 @@ class Serialiser {
   /**
    * Yanks properties at a given hierarchal level and applies filters to them.
    *
-   * @param {Node} node - Current level node.
+   * @param {Node} root - Current level node.
    * @param {object} data - Data to extract properties from.
    * @param {Node} parent - Parent level node.
    *
    * @returns {void}
    */
-  yank (node, data, parent) {
-    this.filter(node, data);
-
+  yank (root, data, parent) {
+    const node = root.filter(data);
     const value = this.get(data, node.key.path, node.options);
     const set = this.set.bind(this, node, parent);
 
@@ -344,29 +368,6 @@ class Serialiser {
     }
 
     return result
-  }
-
-  /**
-   * Applies filters defined in the AST schema with parameters set within the
-   * schema.
-   *
-   * @param {Node} node - Current level node.
-   * @param {object} data - Data to extract properties from.
-   *
-   * @returns {object} - Params with filters applied.
-   */
-  filter (node, data) {
-    const params = {
-      node,
-      data
-    };
-
-    for (const { fn, flag, args } of node.filters) {
-      fn(params, {
-        flag,
-        args
-      });
-    }
   }
 
   /**
