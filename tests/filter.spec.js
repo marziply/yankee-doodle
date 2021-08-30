@@ -12,12 +12,10 @@ describe('src/filter', () => {
           name: null
         }
       }
-      const params = {
-        node,
-        data
-      }
 
-      filters.as(params, {
+      filters.as({
+        node,
+        data,
         flag: null,
         args: [
           name
@@ -45,12 +43,10 @@ describe('src/filter', () => {
           nullable: false
         }
       }
-      const params = {
-        node,
-        data
-      }
 
-      filters.nullable(params, {
+      filters.nullable({
+        node,
+        data,
         flag: {
           on: jest.fn()
         },
@@ -78,12 +74,11 @@ describe('src/filter', () => {
           }
         ]
       }
-      const params = {
-        node,
-        data
-      }
 
-      filters.nullable(params, {
+      filters.nullable({
+        node,
+        data,
+        args: [],
         flag: {
           on: (_, cb) => cb()
         }
@@ -159,12 +154,10 @@ describe('src/filter', () => {
           exec: null
         }
       }
-      const params = {
-        node,
-        data: dataWithFn
-      }
 
-      filters.exec(params, {
+      filters.exec({
+        node,
+        data: dataWithFn,
         flag: null,
         args: [
           'testFn',

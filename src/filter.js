@@ -8,10 +8,10 @@ import Flag from './flag.js'
 const noop = () => null
 
 export const filters = {
-  as ({ node }, { args: [name] }) {
+  as ({ node, args: [name] }) {
     node.key.name = name
   },
-  nullable ({ node }, { flag }) {
+  nullable ({ node, flag }) {
     node.options.nullable = true
 
     flag.on(flags.MACRO, () => {
@@ -23,7 +23,7 @@ export const filters = {
   extract ({ node }) {
     node.options.extract = true
   },
-  exec ({ node, data }, { args: [name, ...args] }) {
+  exec ({ node, data, args: [name, ...args] }) {
     const fn = data[name] ?? noop
 
     node.options.exec = v => fn(v, ...args)
@@ -40,6 +40,15 @@ export default class Filter {
     this.params = params
     this.name = name
     this.flag = new Flag(flag)
+  }
+
+  apply (node, data) {
+    return this.fn({
+      flag: this.flag,
+      args: this.args,
+      node,
+      data
+    })
   }
 
   get fn () {

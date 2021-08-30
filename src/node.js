@@ -14,6 +14,22 @@ export default class Node {
     this.filters = args.map(arg => new Filter(arg))
   }
 
+  /**
+   * Applies filters defined in the AST schema with parameters set within the
+   * schema.
+   *
+   * @param {object} data - Data to extract properties from.
+   *
+   * @returns {Node} - Node with filters applied.
+   */
+  filter (data) {
+    for (const filter of this.filters) {
+      filter.apply(this, data)
+    }
+
+    return this
+  }
+
   children = []
 
   options = {

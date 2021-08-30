@@ -16,15 +16,14 @@ export default class Serialiser {
   /**
    * Yanks properties at a given hierarchal level and applies filters to them.
    *
-   * @param {Node} node - Current level node.
+   * @param {Node} root - Current level node.
    * @param {object} data - Data to extract properties from.
    * @param {Node} parent - Parent level node.
    *
    * @returns {void}
    */
-  yank (node, data, parent) {
-    this.filter(node, data)
-
+  yank (root, data, parent) {
+    const node = root.filter(data)
     const value = this.get(data, node.key.path, node.options)
     const set = this.set.bind(this, node, parent)
 
@@ -63,29 +62,6 @@ export default class Serialiser {
     }
 
     return result
-  }
-
-  /**
-   * Applies filters defined in the AST schema with parameters set within the
-   * schema.
-   *
-   * @param {Node} node - Current level node.
-   * @param {object} data - Data to extract properties from.
-   *
-   * @returns {object} - Params with filters applied.
-   */
-  filter (node, data) {
-    const params = {
-      node,
-      data
-    }
-
-    for (const { fn, flag, args } of node.filters) {
-      fn(params, {
-        flag,
-        args
-      })
-    }
   }
 
   /**
