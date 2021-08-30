@@ -30,6 +30,8 @@ export default class Node {
     return this
   }
 
+  self = () => this
+
   children = []
 
   options = {

@@ -6,6 +6,7 @@ const data = () => ({
   ...original
 })
 const node = () => ({
+  filter: jest.fn(),
   children: [],
   filters: [],
   options: {},
@@ -35,54 +36,214 @@ describe('src/serialiser', () => {
     })
   })
 
-  describe.skip('yank', () => {
-    it('should apply filters by running filter method', () => {
+  describe('yank', () => {
+    const setup = ({ options = {}, children = [] } = {}) => {
       const serialiser = new Serialiser(data(), ast())
-      const value = data()
-      const parent = 'test-parent'
-      const curr = {
-        ...node()
+      const value = 'test-value'
+      const set = 'test-set'
+      const child = {
+        value: true
+      }
+      const root = {
+        options,
+        children,
+        filter () {
+          return this
+        },
+        key: {
+          path: []
+        }
       }
 
-      serialiser.filter = jest
+      serialiser.get = jest
         .fn()
-        .mockReturnValue(curr)
+        .mockReturnValue(value)
+      serialiser.set = jest
+        .fn()
+        .mockReturnValue(set)
+      serialiser.dig = jest
+        .fn()
+        .mockReturnValue(child)
 
-      serialiser.yank(curr, value, parent)
+      return {
+        serialiser,
+        value,
+        child,
+        root
+      }
+    }
 
-      expect(serialiser.filter).toBeCalledWith({
-        data: value,
-        node: curr,
-        parent: {}
+    it('should assign to parent if extract is truthy', () => {
+      const { serialiser, root } = setup({
+        options: {
+          extract: true
+        },
+        children: [
+          'test-child'
+        ]
       })
+      const parent = {}
+
+      serialiser.yank(root, data, parent)
+
+      expect(parent.value).toEqual(true)
+      expect(serialiser.set).not.toBeCalled()
     })
 
-    it('should descend through all children', () => {
-      const serialiser = new Serialiser(data(), ast())
+    it('should set all children to the parent', () => {
+      const { serialiser, root, child } = setup({
+        children: [
+          'test-child'
+        ]
+      })
+      const parent = {}
 
-      serialiser.filter = jest.fn()
+      serialiser.yank(root, data, parent)
 
-      serialiser.yank()
+      const { length } = Object.keys(parent)
+
+      expect(serialiser.set).toBeCalledWith(parent, root.key, child)
+      expect(length).toEqual(0)
+    })
+
+    it('should set value on the parent', () => {
+      const { serialiser, root, value } = setup()
+      const parent = {}
+
+      serialiser.yank(root, data, parent)
+
+      expect(serialiser.set).toBeCalledWith(parent, root.key, value)
     })
   })
 
   describe('dig', () => {
+    it('should return null if data is falsey and is nullable', () => {
+      const serialiser = new Serialiser(data(), ast())
+      const result = serialiser.dig(undefined, [])
 
-  })
+      expect(result).toBeNull()
+    })
 
-  describe('filter', () => {
+    it('should return result', () => {
+      const serialiser = new Serialiser(data(), ast())
+      const value = 'test-value'
 
+      serialiser.yank = jest.fn()
+
+      const result = serialiser.dig(value, [])
+
+      expect(result).toEqual({})
+    })
+
+    it('should call yank for each child', () => {
+      const serialiser = new Serialiser(data(), ast())
+      const value = 'test-value'
+      const children = [
+        {
+          options: {}
+        },
+        {
+          options: {}
+        }
+      ]
+
+      serialiser.yank = jest.fn()
+      serialiser.dig(value, children)
+
+      expect(serialiser.yank).toBeCalledTimes(children.length)
+      expect(serialiser.yank).toBeCalledWith(children[0], value, {})
+    })
   })
 
   describe('serialise', () => {
+    it('should call yank for each item in the AST', () => {
+      const value = 'test-value'
+      const ast = [
+        'test-1',
+        'test-2'
+      ]
+      const data = {
+        value
+      }
+      const serialiser = new Serialiser(data, ast)
 
+      serialiser.yank = jest.fn()
+      serialiser.serialise()
+
+      expect(serialiser.yank).toBeCalledTimes(ast.length)
+    })
+
+    it('should return result', () => {
+      const serialiser = new Serialiser(data(), ast())
+      const value = 'test-result'
+
+      serialiser.result = value
+      serialiser.yank = jest.fn()
+
+      const result = serialiser.serialise()
+
+      expect(result).toEqual(value)
+    })
   })
 
   describe('get', () => {
+    const path = [
+      'nested',
+      'data',
+      'items',
+      'one'
+    ]
 
+    it('should retrieve a value from a given path', () => {
+      const source = data()
+      const serialiser = new Serialiser(source, ast())
+      const result = serialiser.get(source, path)
+
+      expect(result).toEqual('one')
+    })
+
+    it('should run exec() if available in options', () => {
+      const source = data()
+      const serialiser = new Serialiser(source, ast())
+      const value = 'test-value'
+      const options = {
+        exec: jest
+          .fn()
+          .mockReturnValue(value)
+      }
+      const result = serialiser.get(source, path, options)
+
+      expect(result).toEqual(value)
+    })
+
+    it('should return null if options.nullable is truthy and result is not', () => {
+      const source = data()
+      const serialiser = new Serialiser(source, ast())
+      const path = [
+        'foo',
+        'bar'
+      ]
+      const options = {
+        nullable: true
+      }
+      const result = serialiser.get(source, path, options)
+
+      expect(result).toBeNull()
+    })
   })
 
   describe('set', () => {
+    it('should set the value at the given key location', () => {
+      const serialiser = new Serialiser(data(), ast())
+      const parent = {}
+      const key = {
+        name: 'foo'
+      }
+      const value = 'test-value'
 
+      serialiser.set(parent, key, value)
+
+      expect(parent.foo).toEqual(value)
+    })
   })
 })

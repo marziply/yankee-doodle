@@ -23,18 +23,18 @@ export default class Serialiser {
    * @returns {void}
    */
   yank (root, data, parent) {
-    const node = root.filter(data)
-    const value = this.get(data, node.key.path, node.options)
-    const set = this.set.bind(this, node, parent)
+    const { children, options, key } = root.filter(data)
+    const value = this.get(data, key.path, options)
+    const set = child => this.set(parent, key, child)
 
-    if (node.children.length) {
-      if (value || node.options.nullable) {
-        const children = this.dig(node, value)
+    if (children.length) {
+      if (value || options.nullable) {
+        const items = this.dig(value, children)
 
-        if (node.options.extract) {
-          assign(parent, children)
+        if (options.extract) {
+          assign(parent, items)
         } else {
-          set(children)
+          set(items)
         }
       }
     } else {
@@ -46,19 +46,19 @@ export default class Serialiser {
    * Digs into the next level of hierarchy and yanks all properties from the
    * data source via the AST schema node at that level.
    *
-   * @param {Node} node - Current level node.
-   * @param {object} data - Data to extract properties from.
+   * @param {object} value - Data to extract properties from.
+   * @param {Array.<Node>} children - Child nodes.
    *
    * @returns {object} - Yanked properties.
    */
-  dig (node, data) {
+  dig (value, children) {
+    const nullable = children.every(n => !n.options.nullable)
     const result = {}
-    const nullable = node.children.every(n => !n.options.nullable)
 
-    if (!data && nullable) return null
+    if (!value && nullable) return null
 
-    for (const child of node.children) {
-      this.yank(child, data, result)
+    for (const child of children) {
+      this.yank(child, value, result)
     }
 
     return result
@@ -81,14 +81,14 @@ export default class Serialiser {
   /**
    * Similar to Lodash.get, this retrieves properties at the given path.
    *
-   * @param {object} data - Data to obtain the value from.
+   * @param {object} item - Data to obtain the value from.
    * @param {Array.<string>} path - Segments of a path to the value.
-   * @param {object} options - Configuration for retrieving the value.
+   * @param {object} [options] - Configuration for retrieving the value.
    *
    * @returns {any | null} - Value at the given path, if it exists.
    */
-  get (data, path, options) {
-    const value = path.reduce((acc, curr) => acc?.[curr], data)
+  get (item, path, options = {}) {
+    const value = path.reduce((acc, curr) => acc?.[curr], item)
     const result = options.exec
       ? options.exec(value)
       : value
@@ -101,14 +101,14 @@ export default class Serialiser {
   /**
    * Sets a vaLue on the given parent value.
    *
-   * @param {Node} node - Current level node.
    * @param {Node} parent - Parent node value.
+   * @param {Key} key - Key instance on the current Node.
    * @param {any} value - Value to set onto the parent node.
    *
    * @returns {void}
    */
-  set (node, parent, value) {
-    parent[node.key.name] = value
+  set (parent, key, value) {
+    parent[key.name] = value
   }
 
   result = {}
