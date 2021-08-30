@@ -1,5 +1,6 @@
 import { jest } from '@jest/globals'
-import { filters } from '../src/filter.js'
+import Filter, { filters } from '../src/filter.js'
+import Flag from '../src/flag.js'
 import yank from '../src/yank.js'
 import data from './data.json'
 
@@ -192,8 +193,39 @@ describe('src/filter', () => {
   })
 
   describe('Filter', () => {
-    describe('filter', () => {
-      // @TODO
+    describe('constructor', () => {
+      it('should set filter, key, params, name, and flag', () => {
+        const str = 'as(foo)'
+        const filter = new Filter(str)
+
+        expect(filter.filter).toEqual(str)
+        expect(filter.key).toEqual('as')
+        expect(filter.name).toEqual('as')
+        expect(filter.params).toEqual('(foo)')
+        expect(filter.flag).toBeInstanceOf(Flag)
+      })
+    })
+
+    describe('apply', () => {
+      it('should run fn() with options', () => {
+        const filter = new Filter('as(foo)')
+        const node = {
+          value: 'test-node'
+        }
+        const data = {
+          value: 'test-data'
+        }
+
+        filter.fn = jest.fn()
+        filter.apply(node, data)
+
+        expect(filter.fn).toBeCalledWith({
+          flag: filter.flag,
+          args: filter.args,
+          node,
+          data
+        })
+      })
     })
   })
 })

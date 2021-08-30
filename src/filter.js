@@ -37,9 +37,12 @@ export default class Filter {
 
     this.filter = filter
     this.key = key
-    this.params = params
     this.name = name
+    this.params = params
+    this.fn = filters[this.name]
     this.flag = new Flag(flag)
+
+    if (!this.fn) throw new FilterNotFoundError(name)
   }
 
   apply (node, data) {
@@ -49,14 +52,6 @@ export default class Filter {
       node,
       data
     })
-  }
-
-  get fn () {
-    const fn = filters[this.name]
-
-    if (fn) return fn
-
-    throw new FilterNotFoundError(this.name)
   }
 
   get args () {
