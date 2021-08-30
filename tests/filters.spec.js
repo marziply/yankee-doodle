@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals'
+import { filters } from '../src/filter.js'
 import yank from '../src/yank.js'
-import filters from '../src/filters.js'
 import data from './data.json'
 
-describe('src/filters', () => {
+describe('src/filter', () => {
   describe('as', () => {
     it('should set node.key.name to the argument given', () => {
       const name = 'test-name'
@@ -14,10 +14,15 @@ describe('src/filters', () => {
       }
       const params = {
         node,
-        args: [name]
+        data
       }
 
-      filters.as(params)
+      filters.as(params, {
+        flag: null,
+        args: [
+          name
+        ]
+      })
 
       expect(node.key.name).toEqual(name)
     })
@@ -42,12 +47,15 @@ describe('src/filters', () => {
       }
       const params = {
         node,
-        flag: {
-          on: jest.fn()
-        }
+        data
       }
 
-      filters.nullable(params)
+      filters.nullable(params, {
+        flag: {
+          on: jest.fn()
+        },
+        args: []
+      })
 
       expect(node.options.nullable).toBe(true)
     })
@@ -72,12 +80,14 @@ describe('src/filters', () => {
       }
       const params = {
         node,
+        data
+      }
+
+      filters.nullable(params, {
         flag: {
           on: (_, cb) => cb()
         }
-      }
-
-      filters.nullable(params)
+      })
 
       expect(node.options.nullable).toBe(true)
       expect(node.children.every(c => c.options.nullable === true)).toBe(true)
@@ -104,10 +114,14 @@ describe('src/filters', () => {
         }
       }
       const params = {
-        node
+        node,
+        data
       }
 
-      filters.extract(params)
+      filters.extract(params, {
+        node: null,
+        args: []
+      })
 
       expect(node.options.extract).toBe(true)
     })
@@ -147,14 +161,16 @@ describe('src/filters', () => {
       }
       const params = {
         node,
-        data: dataWithFn,
+        data: dataWithFn
+      }
+
+      filters.exec(params, {
+        flag: null,
         args: [
           'testFn',
           ...args
         ]
-      }
-
-      filters.exec(params)
+      })
 
       const result = node.options.exec(arg)
 
@@ -167,7 +183,9 @@ describe('src/filters', () => {
       const arg = 'foo'
       const dataWithFn = {
         ...data,
-        testFn: jest.fn().mockReturnValue(value)
+        testFn: jest
+          .fn()
+          .mockReturnValue(value)
       }
       const result = yank(dataWithFn, `
         firstName | exec(testFn, ${arg})

@@ -1,13 +1,27 @@
+import { jest } from '@jest/globals'
 import Serialiser from '../src/serialiser.js'
-import data from './data.json'
+import original from './data.json'
 
-const node = {
+const data = () => ({
+  ...original
+})
+const node = () => ({
   children: [],
   filters: [],
   options: {},
-  key: {}
-}
-const ast = []
+  key: {
+    name: 'one',
+    path: [
+      'nested',
+      'data',
+      'items',
+      'one'
+    ]
+  }
+})
+const ast = () => [
+  node()
+]
 
 describe('src/serialiser', () => {
   describe('constructor', () => {
@@ -21,9 +35,34 @@ describe('src/serialiser', () => {
     })
   })
 
-  describe('yank', () => {
-    it('should apply filters', () => {
-      const serialiser = new Serialiser(data, ast)
+  describe.skip('yank', () => {
+    it('should apply filters by running filter method', () => {
+      const serialiser = new Serialiser(data(), ast())
+      const value = data()
+      const parent = 'test-parent'
+      const curr = {
+        ...node()
+      }
+
+      serialiser.filter = jest
+        .fn()
+        .mockReturnValue(curr)
+
+      serialiser.yank(curr, value, parent)
+
+      expect(serialiser.filter).toBeCalledWith({
+        data: value,
+        node: curr,
+        parent: {}
+      })
+    })
+
+    it('should descend through all children', () => {
+      const serialiser = new Serialiser(data(), ast())
+
+      serialiser.filter = jest.fn()
+
+      serialiser.yank()
     })
   })
 

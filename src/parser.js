@@ -1,3 +1,6 @@
+import { tokens, reg } from './tokens.js'
+import Node from './node.js'
+
 /**
  * Parses the given schemas into a somewhat simplified abstract syntax tree
  * (AST) which enables modules later on to decipher the properties to pick from
@@ -7,10 +10,10 @@
  */
 export default class Parser {
   constructor (schemas) {
-    this.schemas = schemas
+    this.schema = schemas.join(',')
     this.tokens = this
       .strip()
-      .split(this.reg.keys)
+      .split(reg.keys)
       .map(i => this.tokenise(i))
   }
 
@@ -21,53 +24,12 @@ export default class Parser {
    */
   nodeify () {
     const [token, shift] = this.tokens.shift()
-    const [key, ...args] = token.split(Parser.tokens.DIV)
-    const node = {
-      children: [],
-      filters: this.filterfy(args),
-      options: {
-        ...Parser.options
-      },
-      key: {
-        value: key,
-        path: key.split(Parser.tokens.SEG),
-        name: key
-          .split(Parser.tokens.SEG)
-          .pop()
-      }
-    }
+    const node = new Node(token, shift)
 
     return {
       shift,
       node
     }
-  }
-
-  /**
-   * Generates a set of filters from the given property.
-   *
-   * @param {Array.<string>} args - Filter arguments.
-   *
-   * @returns {Array.<object>} - Property filter schemas.
-   */
-  filterfy (args) {
-    return args.map(r => {
-      const [key, params] = r.split(/(?=\([\w$_,]*\)|$)/g)
-      const [name, flag] = key.split(this.reg.flags)
-      const args = params
-        ?.replace(/\(([\w$_,]*)\)/g, '$1')
-        .split(',')
-        .filter(Boolean)
-
-      return {
-        name,
-        args: args ?? [],
-        flag: {
-          value: flag ?? null,
-          on: (f, cb) => flag === f && cb()
-        }
-      }
-    })
   }
 
   /**
@@ -81,10 +43,10 @@ export default class Parser {
    * @returns {Array.<string|null, number>} - Defined depth per schema key.
    */
   tokenise (key) {
-    const [prop, ...scopes] = key.split(this.reg.scopes)
+    const [prop, ...scopes] = key.split(reg.scopes)
     const length = this.measure(scopes)
 
-    return prop === Parser.tokens.CLOSE
+    return prop === tokens.CLOSE
       ? [null, length - 1]
       : [prop, length]
   }
@@ -113,12 +75,12 @@ export default class Parser {
   /**
    * Measures the length of the given scope from a series of tokens.
    *
-   * @param {Array.<string>} tokens - Token strings to measure scope from.
+   * @param {Array.<string>} chars - Token strings to measure scope from.
    *
    * @returns {number} - Scope size.
    */
-  measure (tokens) {
-    return +tokens.includes(Parser.tokens.OPEN) || -tokens.length || 0
+  measure (chars) {
+    return +chars.includes(tokens.OPEN) || -chars.length || 0
   }
 
   /**
@@ -129,7 +91,7 @@ export default class Parser {
    */
   strip () {
     const isNewLine = match => match === '\n'
-    const isClose = (val, offset) => val[offset + 1] === Parser.tokens.CLOSE
+    const isClose = (val, offset) => val[offset + 1] === tokens.CLOSE
 
     return this.schema
       .trim()
@@ -150,50 +112,7 @@ export default class Parser {
     return this.tree
   }
 
-  reg = {
-    get keys () {
-      return new RegExp(`,(?![^(]*[)])|(?<=${Parser.tokens.OPEN})`)
-    },
-    get scopes () {
-      const { CLOSE, OPEN } = Parser.tokens
-
-      return new RegExp(`(?=[${CLOSE}]+)|(?=${OPEN})`)
-    },
-    get flags () {
-      const joined = Object
-        .values(Parser.tokens.FLAGS)
-        .map(i => `\\${i}`)
-        .join('|')
-
-      return new RegExp(`(?=${joined})`)
-    }
-  }
-
   depth = 0
 
   tree = []
-
-  get schema () {
-    return this.schemas.join(',')
-  }
-
-  static options = {
-    nullable: false,
-    extract: false,
-    exec: null
-  }
-
-  static tokens = {
-    OPEN: ':{',
-    CLOSE: '}',
-    DIV: '|',
-    SEG: '.',
-    FLAGS: {
-      MACRO: '!'
-    }
-  }
 }
-
-export const tokens = Parser.tokens
-
-export const flags = Parser.tokens.FLAGS

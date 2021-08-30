@@ -1,6 +1,3 @@
-import filters from './filters.js'
-import { FilterNotFoundError } from './validator.js'
-
 const { assign } = Object
 
 /**
@@ -26,11 +23,7 @@ export default class Serialiser {
    * @returns {void}
    */
   yank (node, data, parent) {
-    this.filter({
-      node,
-      data,
-      parent
-    })
+    this.filter(node, data)
 
     const value = this.get(data, node.key.path, node.options)
     const set = this.set.bind(this, node, parent)
@@ -76,21 +69,22 @@ export default class Serialiser {
    * Applies filters defined in the AST schema with parameters set within the
    * schema.
    *
-   * @param {object} params - Filter paramters for this level of hierarchy.
+   * @param {Node} node - Current level node.
+   * @param {object} data - Data to extract properties from.
    *
-   * @returns {void}
+   * @returns {object} - Params with filters applied.
    */
-  filter (params) {
-    for (const { name, flag, args } of params.node.filters) {
-      const filter = filters[name]
-      const merged = assign(params, {
+  filter (node, data) {
+    const params = {
+      node,
+      data
+    }
+
+    for (const { fn, flag, args } of node.filters) {
+      fn(params, {
         flag,
         args
       })
-
-      if (!filter) throw new FilterNotFoundError(name)
-
-      filter(merged)
     }
   }
 
