@@ -223,9 +223,11 @@ var Filter = function () {
 
     this.filter = filter;
     this.key = key;
-    this.params = params;
     this.name = name;
+    this.params = params;
+    this.fn = filters[this.name];
     this.flag = new Flag(flag);
+    if (!this.fn) throw new FilterNotFoundError(name);
   }
 
   _createClass(Filter, [{
@@ -237,13 +239,6 @@ var Filter = function () {
         node: node,
         data: data
       });
-    }
-  }, {
-    key: "fn",
-    get: function get() {
-      var fn = filters[this.name];
-      if (fn) return fn;
-      throw new FilterNotFoundError(this.name);
     }
   }, {
     key: "args",
@@ -424,18 +419,27 @@ var Serialiser = function () {
   _createClass(Serialiser, [{
     key: "yank",
     value: function yank(root, data, parent) {
-      var node = root.filter(data);
-      var value = this.get(data, node.key.path, node.options);
-      var set = this.set.bind(this, node, parent);
+      var _this4 = this;
 
-      if (node.children.length) {
-        if (value || node.options.nullable) {
-          var children = this.dig(node, value);
+      var _root$filter = root.filter(data),
+          children = _root$filter.children,
+          options = _root$filter.options,
+          key = _root$filter.key;
 
-          if (node.options.extract) {
-            assign(parent, children);
+      var value = this.get(data, key.path, options);
+
+      var set = function set(child) {
+        return _this4.set(parent, key, child);
+      };
+
+      if (children.length) {
+        if (value || options.nullable) {
+          var items = this.dig(value, children);
+
+          if (options.extract) {
+            assign(parent, items);
           } else {
-            set(children);
+            set(items);
           }
         }
       } else {
@@ -444,20 +448,20 @@ var Serialiser = function () {
     }
   }, {
     key: "dig",
-    value: function dig(node, data) {
-      var result = {};
-      var nullable = node.children.every(function (n) {
+    value: function dig(value, children) {
+      var nullable = children.every(function (n) {
         return !n.options.nullable;
       });
-      if (!data && nullable) return null;
+      var result = {};
+      if (!value && nullable) return null;
 
-      var _iterator3 = _createForOfIteratorHelper(node.children),
+      var _iterator3 = _createForOfIteratorHelper(children),
           _step3;
 
       try {
         for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
           var child = _step3.value;
-          this.yank(child, data, result);
+          this.yank(child, value, result);
         }
       } catch (err) {
         _iterator3.e(err);
@@ -488,17 +492,18 @@ var Serialiser = function () {
     }
   }, {
     key: "get",
-    value: function get(data, path, options) {
+    value: function get(item, path) {
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
       var value = path.reduce(function (acc, curr) {
         return acc === null || acc === void 0 ? void 0 : acc[curr];
-      }, data);
+      }, item);
       var result = options.exec ? options.exec(value) : value;
       return options.nullable ? result !== null && result !== void 0 ? result : null : result;
     }
   }, {
     key: "set",
-    value: function set(node, parent, value) {
-      parent[node.key.name] = value;
+    value: function set(parent, key, value) {
+      parent[key.name] = value;
     }
   }]);
 

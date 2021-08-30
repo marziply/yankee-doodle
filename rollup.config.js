@@ -5,12 +5,12 @@ export default {
   input: './index.js',
   output: [
     {
-      file: 'dist/yank.esm.js',
+      file: 'dist/yank.mjs',
       format: 'esm',
       exports: 'default',
     },
     {
-      file: 'dist/yank.js',
+      file: 'dist/yank.cjs',
       format: 'cjs',
       exports: 'default',
       plugins: [
