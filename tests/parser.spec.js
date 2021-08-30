@@ -57,25 +57,6 @@ describe('src/parser', () => {
     })
   })
 
-  describe('filterfy', () => {
-    it('should create an array of filters from a given node in a schema', () => {
-      const raws = ['nullable', 'as(first_name)']
-      const parser = new Parser([])
-      const [nullable, as] = parser.filterfy(raws)
-
-      expect(nullable).toEqual(expect.objectContaining({
-        name: 'nullable',
-        args: []
-      }))
-      expect(as).toEqual(expect.objectContaining({
-        name: 'as',
-        args: [
-          'first_name'
-        ]
-      }))
-    })
-  })
-
   describe('tokenise', () => {
     const tokenise = tok => {
       const parser = new Parser([])
@@ -158,7 +139,7 @@ describe('src/parser', () => {
   })
 
   describe('measure', () => {
-    it.only('should measure the size of scope given', () => {
+    it('should measure the size of scope given', () => {
       const parser = new Parser([])
 
       expect(parser.measure(':{')).toEqual(1)
