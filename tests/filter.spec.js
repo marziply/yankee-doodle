@@ -108,14 +108,12 @@ describe('src/filter', () => {
           extract: false
         }
       }
-      const params = {
-        node,
-        data
-      }
 
-      filters.extract(params, {
-        node: null,
-        args: []
+      filters.extract({
+        node,
+        data,
+        args: [],
+        flag: null
       })
 
       expect(node.options.extract).toBe(true)
