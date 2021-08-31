@@ -139,7 +139,7 @@ var Flag = function () {
   function Flag(flag) {
     _classCallCheck(this, Flag);
 
-    this.flag = flag;
+    this.flag = flag !== null && flag !== void 0 ? flag : null;
   }
 
   _createClass(Flag, [{
@@ -201,8 +201,9 @@ var filters = {
 
     var fn = (_data$name = data[name]) !== null && _data$name !== void 0 ? _data$name : noop;
 
-    node.options.exec = function (v) {
-      return fn.apply(void 0, [v].concat(_toConsumableArray(args)));
+    node.options.exec = function () {
+      var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : data;
+      return fn.call.apply(fn, [value, value].concat(_toConsumableArray(args)));
     };
   }
 };
@@ -503,7 +504,9 @@ var Serialiser = function () {
   }, {
     key: "set",
     value: function set(parent, key, value) {
-      parent[key.name] = value;
+      if (typeof value !== 'undefined') {
+        parent[key.name] = value;
+      }
     }
   }]);
 

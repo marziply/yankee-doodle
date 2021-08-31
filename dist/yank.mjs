@@ -17,6 +17,7 @@ const reg = {
 
 const flags = {
   MACRO: '!',
+  // @NOTE: Not implemented yet.
   COND: '?'
 };
 
@@ -64,7 +65,7 @@ function validate (schemas) {
 
 class Flag {
   constructor (flag) {
-    this.flag = flag;
+    this.flag = flag ?? null;
   }
 
   on (flag, callback) {
@@ -98,7 +99,7 @@ const filters = {
   exec ({ node, data, args: [name, ...args] }) {
     const fn = data[name] ?? noop;
 
-    node.options.exec = v => fn(v, ...args);
+    node.options.exec = (value = data) => fn.call(value, value, ...args);
   }
 };
 
@@ -142,6 +143,12 @@ class Property {
   }
 }
 
+/**
+ * Represents a single node item within the AST hierarchy.
+ *
+ * @param {string} token - AST token value.
+ * @param {number} shift - Scope shift size.
+ */
 class Node {
   constructor (token, shift) {
     const [name, ...args] = token.split(tokens.DIV);
@@ -222,7 +229,7 @@ class Parser {
    *
    * @param {string} key - Token item to determine the depth value.
    *
-   * @returns {Array.<string|null, number>} - Defined depth per schema key.
+   * @returns {Array.<string | null, number>} - Defined depth per schema key.
    */
   tokenise (key) {
     const [prop, ...scopes] = key.split(reg.scopes);
@@ -409,7 +416,9 @@ class Serialiser {
    * @returns {void}
    */
   set (parent, key, value) {
-    parent[key.name] = value;
+    if (typeof value !== 'undefined') {
+      parent[key.name] = value;
+    }
   }
 
   result = {}
