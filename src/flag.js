@@ -1,6 +1,6 @@
 export default class Flag {
   constructor (flag) {
-    this.flag = flag
+    this.flag = flag ?? null
   }
 
   on (flag, callback) {

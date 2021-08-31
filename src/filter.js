@@ -26,7 +26,7 @@ export const filters = {
   exec ({ node, data, args: [name, ...args] }) {
     const fn = data[name] ?? noop
 
-    node.options.exec = value => fn.call(value, value, ...args)
+    node.options.exec = (value = data) => fn.call(value, value, ...args)
   }
 }
 
