@@ -1,0 +1,17 @@
+{
+  "transform": {},
+  "coverageDirectory": "./coverage",
+  "coverageProvider": "v8",
+  "coverageReporters": [
+    "cobertura"
+  ],
+  "coveragePathIgnorePatterns": [
+    "/node_modules/"
+  ],
+  "testPathIgnorePatterns": [
+    "/node_modules/"
+  ],
+  "testMatch": [
+    "**/tests/**/*.spec.js"
+  ]
+}

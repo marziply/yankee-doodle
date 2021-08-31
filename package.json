@@ -1,19 +1,23 @@
 {
   "name": "yankee-doodle",
-  "version": "1.6.0",
-  "scripts": {
-    "test": "jest ./tests",
-    "build": "NODE_ENV=production webpack",
-    "build:commit": "npm run build && npm run commit",
-    "commit": "git add ./dist/yankee-doodle.min.js && git commit --amend --no-edit --no-verify"
-  },
+  "version": "2.0.0",
   "description": "Yank values from a given object via a specified schema",
-  "author": "Hayden Perry haydencwperry@gmail.com",
+  "author": "marziply contact@marziply.dev",
+  "type": "module",
+  "scripts": {
+    "test": "bin/test.sh",
+    "build": "rollup -c",
+    "lint": "eslint ./src/*.js"
+  },
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./configure": "./src/configure.js"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bakewellcake/yankee-doodle.git"
+    "url": "git+https://github.com/marziply/yankee-doodle.git"
   },
-  "main": "index.js",
   "keywords": [
     "yank",
     "yanked",
@@ -24,19 +28,28 @@
     "schema"
   ],
   "bugs": {
-    "url": "https://github.com/bakewellcake/yankee-doodle/issues"
+    "url": "https://github.com/marziply/yankee-doodle/issues"
   },
-  "homepage": "https://github.com/bakewellcake/yankee-doodle#readme",
+  "engines": {
+    "node": ">=14.x",
+    "browsers": "> 0.25%"
+  },
+  "homepage": "https://github.com/marziply/yankee-doodle#readme",
   "license": "MIT",
   "devDependencies": {
+    "@babel/eslint-parser": "^7.14.9",
+    "@babel/eslint-plugin": "^7.14.5",
+    "@babel/preset-env": "^7.15.0",
+    "@rollup/plugin-babel": "^5.3.0",
+    "eslint": "^7.32.0",
     "husky": "^4.2.1",
-    "jest": "^25.1.0",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "jest": "^27.0.6",
+    "rollup": "^2.56.2",
+    "rollup-plugin-terser": "^7.0.2"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run test"
+      "pre-push": "npm run lint && npm run test"
     }
   }
 }

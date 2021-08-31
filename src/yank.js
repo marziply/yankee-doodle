@@ -1,30 +1,24 @@
-const walk = require('./walk')
-const isObject = require('./isObject')
+import Parser from './parser.js'
+import Serialiser from './serialiser.js'
+import validate from './validator.js'
 
-function yank (object, ...args) {
-  if (!args.length) return object
+/**
+ * Yanks properties from a given data object via a set of schemas. Values are
+ * yanked from the data object based on keys provided within the schema, which
+ * individually can be filtered to be transform or otherwise rejected from the
+ * output.
+ *
+ * @param {object} data - Data to yank properties from.
+ * @param {...string|Array.<string>} args - Collection of schemas.
+ *
+ * @returns {object} - Data picked from source object via the schema.
+ */
+export function yank (data, ...args) {
+  const schemas = validate(args.flat())
+  const parser = new Parser(schemas)
+  const serialiser = new Serialiser(data, parser.parse())
 
-  const schemaList = args.flat()
-  const yanked = {}
-
-  if (!schemaList.every(arg => typeof arg === 'string')) throw 'All arguments must be strings'
-
-  for (const schema of schemaList) {
-    const parsedArgs = schema
-      .replace(/\s+/g, '')
-      .replace(/([\w->]+)/g, '"$1"')
-      .replace(/((?<!}),|(?<=")\s?}|(?<!})$)/g, ':0$1')
-    const parsedSchema = JSON.parse(`{${parsedArgs}}`)
-    walk(object, yanked, parsedSchema, this.nullify)
-  }
-
-  if (this && this.nullify && isObject(yanked)) {
-    const { length } = Object.values(yanked)
-
-    if (!length) return null
-  }
-
-  return yanked
+  return serialiser.serialise()
 }
 
-module.exports = yank
+export default yank

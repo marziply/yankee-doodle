@@ -1,8 +1,10 @@
 node_modules/
+coverage/
+.cache/
+.parcel-cache/
 .env
 .env.*
 *.env
-.vscode/
 .DS_STORE
 .DS_STORE?
-package-lock.json
+sandbox.js
