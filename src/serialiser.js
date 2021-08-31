@@ -108,7 +108,9 @@ export default class Serialiser {
    * @returns {void}
    */
   set (parent, key, value) {
-    parent[key.name] = value
+    if (typeof value !== 'undefined') {
+      parent[key.name] = value
+    }
   }
 
   result = {}
