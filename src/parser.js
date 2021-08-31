@@ -40,7 +40,7 @@ export default class Parser {
    *
    * @param {string} key - Token item to determine the depth value.
    *
-   * @returns {Array.<string|null, number>} - Defined depth per schema key.
+   * @returns {Array.<string | null, number>} - Defined depth per schema key.
    */
   tokenise (key) {
     const [prop, ...scopes] = key.split(reg.scopes)

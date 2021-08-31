@@ -2,6 +2,12 @@ import tokens from './tokens.js'
 import Filter from './filter.js'
 import Property from './property.js'
 
+/**
+ * Represents a single node item within the AST hierarchy.
+ *
+ * @param {string} token - AST token value.
+ * @param {number} shift - Scope shift size.
+ */
 export default class Node {
   constructor (token, shift) {
     const [name, ...args] = token.split(tokens.DIV)

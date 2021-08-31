@@ -17,6 +17,7 @@ export const reg = {
 
 export const flags = {
   MACRO: '!',
+  // @NOTE: Not implemented yet.
   COND: '?'
 }
 
