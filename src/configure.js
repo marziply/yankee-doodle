@@ -9,7 +9,7 @@ const { assign } = Object
  *
  * @returns {object} - Configured options.
  */
-export function configure (options = {}) {
+export default function configure (options = {}) {
   assign(flags, options.flags ?? {})
   assign(tokens, options.tokens ?? {})
 
